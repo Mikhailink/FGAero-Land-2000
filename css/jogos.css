@@ -1,0 +1,541 @@
+/* ==========================================================================
+   FGAero Land 2000 — jogos.css
+   Arcade de vidro: HUD, palco, sobreposições, controles de toque, cartões.
+   ========================================================================== */
+
+/* ---------- 1. Cartões de jogo (hub) ---------- */
+.cartao-jogo {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  overflow: hidden;
+}
+.cartao-jogo__palco {
+  position: relative;
+  height: 156px;
+  display: grid;
+  place-items: center;
+  background-image: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 65%),
+    linear-gradient(180deg, #8fd4ff, #dff4ff 62%, #bdea9a 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+}
+.cartao-jogo__palco img {
+  height: 110px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(7, 40, 80, 0.32));
+  animation: flutuarLento 8s ease-in-out infinite;
+}
+.cartao-jogo__bolha {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95), rgba(180, 235, 255, 0.35) 60%, rgba(120, 200, 255, 0.12));
+  animation: subirBolha 7s linear infinite;
+}
+@keyframes subirBolha {
+  from {
+    transform: translateY(120%) scale(0.7);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.95;
+  }
+  to {
+    transform: translateY(-150%) scale(1.05);
+    opacity: 0;
+  }
+}
+.cartao-jogo__texto {
+  padding: 0 1.15rem 1.2rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.cartao-jogo__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4ch;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(180deg, #74c6f5, #2a7ecb);
+  border-radius: var(--raio-pilula);
+  padding: 0.14rem 0.6rem;
+  width: fit-content;
+  box-shadow: var(--brilho-topo);
+}
+.recorde-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4ch;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4a3406;
+  background: linear-gradient(180deg, #fff8d4, #ffd971);
+  border: 1px solid #fff;
+  border-radius: var(--raio-pilula);
+  padding: 0.2rem 0.65rem;
+  box-shadow: var(--sombra-suave), var(--brilho-topo);
+}
+
+/* ---------- 2. Palco do jogo ---------- */
+.area-jogo {
+  display: grid;
+  gap: 1rem;
+}
+.palco-jogo {
+  position: relative;
+  border-radius: var(--raio);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--sombra-forte), var(--brilho-topo);
+  background: linear-gradient(180deg, #6ec4ff, #cdeeff 55%, #a9e08a);
+  touch-action: manipulation;
+  user-select: none;
+}
+.palco-jogo canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+}
+.palco-jogo--alto canvas {
+  aspect-ratio: 4 / 5;
+}
+@media (max-width: 620px) {
+  .palco-jogo--alto canvas {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.hud__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+.hud__item {
+  display: flex;
+  align-items: center;
+  gap: 0.45ch;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0b3a68;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(208, 236, 255, 0.72));
+  border: 1px solid #fff;
+  border-radius: var(--raio-pilula);
+  padding: 0.32rem 0.8rem;
+  box-shadow: var(--sombra-suave), var(--brilho-topo);
+  font-variant-numeric: tabular-nums;
+}
+.hud__item--destaque {
+  background: linear-gradient(180deg, #fff6cf, #ffd35e);
+  color: #4a3406;
+}
+.hud__barra {
+  position: relative;
+  flex: 1 1 160px;
+  height: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #fff;
+  box-shadow: inset 0 2px 6px rgba(9, 52, 104, 0.22);
+}
+.hud__barra span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #b6f07f, #5fc46e 60%, #2f9ad6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition: width 0.2s linear;
+}
+.hud__barra--aviso span {
+  background: linear-gradient(90deg, #ffdb7c, #ff9a4d 65%, #e8552f);
+}
+
+/* sobreposições */
+.sobreposicao {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1.2rem;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.86), rgba(198, 232, 255, 0.76) 60%, rgba(140, 205, 250, 0.82));
+  backdrop-filter: blur(5px);
+  z-index: 4;
+  transition: opacity 0.28s ease, visibility 0.28s;
+}
+.sobreposicao[hidden] {
+  display: grid;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.sobreposicao__caixa {
+  width: min(100%, 460px);
+  padding: 1.3rem 1.4rem;
+  border-radius: var(--raio);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(222, 242, 255, 0.86));
+  border: 1px solid #fff;
+  box-shadow: var(--sombra-forte), var(--brilho-topo);
+}
+.sobreposicao__caixa h2,
+.sobreposicao__caixa h3 {
+  margin-bottom: 0.4rem;
+}
+.sobreposicao__caixa p {
+  font-size: 0.94rem;
+  color: var(--texto-medio);
+}
+.sobreposicao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.9rem;
+}
+.sobreposicao__dicas {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.28rem;
+  font-size: 0.86rem;
+  color: var(--texto-medio);
+  text-align: left;
+}
+.sobreposicao__dicas li::before {
+  content: "› ";
+  color: var(--aero-azul);
+  font-weight: 700;
+}
+
+/* contagem regressiva 3-2-1 */
+.contagem {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 6;
+  pointer-events: none;
+  font-family: var(--fonte-titulo);
+  font-size: clamp(3.4rem, 13vw, 6.5rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 4px 0 rgba(9, 52, 104, 0.35), 0 0 34px rgba(120, 220, 255, 0.95);
+}
+.contagem[hidden] {
+  display: none;
+}
+.contagem span {
+  animation: pulsoContagem 0.85s ease-out;
+}
+@keyframes pulsoContagem {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* pontuações flutuantes no canvas */
+.pontos-flutuantes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+.ponto-flutuante {
+  position: absolute;
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(9, 52, 104, 0.6);
+  animation: subirPonto 0.9s ease-out forwards;
+}
+.ponto-flutuante--ouro {
+  color: #fff2b0;
+}
+@keyframes subirPonto {
+  from {
+    transform: translate(-50%, 0) scale(0.8);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -46px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* ---------- 3. Controles de toque (voo) ---------- */
+.controles-toque {
+  display: none;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+.controles-toque__botao {
+  flex: 1;
+  padding: 0.85rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0b3a68;
+  border-radius: var(--raio);
+  border: 1px solid #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(196, 230, 255, 0.78));
+  box-shadow: var(--sombra-suave), var(--brilho-topo);
+}
+.controles-toque__botao:active {
+  filter: brightness(0.96);
+  transform: translateY(2px);
+}
+@media (hover: none), (max-width: 720px) {
+  .controles-toque {
+    display: flex;
+  }
+}
+
+/* ---------- 4. Tabela de recordes ---------- */
+.recordes {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pos;
+}
+.recordes li {
+  counter-increment: pos;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--raio-pequeno);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(219, 240, 255, 0.62));
+  border: 1px solid #fff;
+  box-shadow: var(--brilho-topo);
+  font-size: 0.9rem;
+}
+.recordes li::before {
+  content: counter(pos) "º";
+  font-weight: 800;
+  color: var(--aero-azul);
+  min-width: 2.2ch;
+}
+.recordes__pontos {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--aero-azul-escuro);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 5. Jogo da memória ---------- */
+.tabuleiro {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(var(--colunas, 4), minmax(0, 1fr));
+  perspective: 900px;
+}
+.carta {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: none;
+  background: none;
+  padding: 0;
+  border-radius: 12px;
+}
+.carta__interno {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.4, 0.8, 0.3, 1);
+  border-radius: 12px;
+}
+.carta[aria-pressed="true"] .carta__interno,
+.carta.virada .carta__interno {
+  transform: rotateY(180deg);
+}
+.carta__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  backface-visibility: hidden;
+  border: 1px solid #fff;
+  box-shadow: var(--sombra-suave), var(--brilho-topo);
+  overflow: hidden;
+}
+.carta__face--costa {
+  background-image: radial-gradient(circle at 32% 26%, #ffffff, #a9ddff 55%, #3f97dd 100%);
+}
+.carta__face--costa::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.1) 60%);
+}
+.carta__face--frente {
+  transform: rotateY(180deg);
+  background: linear-gradient(180deg, #ffffff, #e6f6ff);
+  padding: 6%;
+}
+.carta__face--frente img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.carta.achada .carta__face--frente {
+  background: linear-gradient(180deg, #f2ffe0, #b9eb92);
+  box-shadow: 0 0 0 3px #eaffd2 inset, var(--sombra-media);
+}
+.carta__nome {
+  position: absolute;
+  bottom: 4%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--aero-azul-escuro);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 6. Trivia ---------- */
+.trivia__enunciado {
+  font-size: clamp(1.05rem, 2.3vw, 1.28rem);
+  font-weight: 700;
+  color: var(--aero-azul-escuro);
+  margin-bottom: 1rem;
+}
+.trivia__opcoes {
+  display: grid;
+  gap: 0.55rem;
+}
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: left;
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--raio);
+  border: 1px solid #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(215, 238, 255, 0.72));
+  box-shadow: var(--sombra-suave), var(--brilho-topo);
+  font-family: var(--fonte);
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--texto);
+  transition: transform var(--transicao), filter var(--transicao);
+}
+.opcao:hover:not([disabled]) {
+  transform: translateX(4px);
+  filter: brightness(1.03);
+}
+.opcao__letra {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 50%;
+  font-weight: 800;
+  color: #0b3a68;
+  background: radial-gradient(circle at 34% 28%, #ffffff, #a5dbff 65%, #3f97dd);
+  border: 1px solid #fff;
+  box-shadow: var(--brilho-topo);
+}
+.opcao--certa {
+  background: linear-gradient(180deg, #eeffdb, #a8e37d);
+  border-color: #fff;
+}
+.opcao--errada {
+  background: linear-gradient(180deg, #ffe6e2, #ff9f8c);
+}
+.opcao[disabled] {
+  opacity: 0.96;
+}
+.trivia__feedback {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--raio);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(219, 241, 255, 0.7));
+  border: 1px solid #fff;
+  box-shadow: var(--sombra-suave), var(--brilho-topo);
+  font-size: 0.93rem;
+  animation: entrarBalao 0.3s ease-out;
+}
+.trivia__feedback strong {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+/* ---------- 7. Aquário (modo decorar) ---------- */
+.seletor-itens {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.2rem 0.7rem;
+}
+.seletor-itens__botao {
+  flex: 0 0 auto;
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  border-radius: 12px;
+  border: 1px solid #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(210, 236, 255, 0.72));
+  box-shadow: var(--brilho-topo);
+}
+.seletor-itens__botao img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.seletor-itens__botao[aria-pressed="true"] {
+  background: linear-gradient(180deg, #eaffd7, #a4e07a);
+  box-shadow: 0 0 0 2px #fff inset, var(--sombra-media);
+}
+.dica-uso {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 0.2rem 0 0;
+}
+
+/* ---------- 8. Responsivo ---------- */
+@media (max-width: 620px) {
+  .tabuleiro {
+    gap: 0.35rem;
+  }
+  .hud__item {
+    font-size: 0.78rem;
+    padding: 0.26rem 0.6rem;
+  }
+  .janela__corpo {
+    padding: 0.9rem 0.9rem 1.05rem;
+  }
+}

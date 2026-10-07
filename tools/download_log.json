@@ -1,0 +1,857 @@
+[
+ {
+  "path": "imagens/skyboxes/skyboxes_22.png",
+  "status": "ok",
+  "kb": 31
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_15.png",
+  "status": "ok",
+  "kb": 33
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_11.png",
+  "status": "ok",
+  "kb": 0
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_25.png",
+  "status": "ok",
+  "kb": 58
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_24.png",
+  "status": "ok",
+  "kb": 86
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_14.jpg",
+  "status": "ok",
+  "kb": 118
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_38.png",
+  "status": "ok",
+  "kb": 126
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_26.png",
+  "status": "ok",
+  "kb": 144
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_28.png",
+  "status": "ok",
+  "kb": 153
+ },
+ {
+  "path": "imagens/skyboxes/skyboxes_16.png",
+  "status": "ok",
+  "kb": 161
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_57.png",
+  "status": "ok",
+  "kb": 96
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_23.png",
+  "status": "ok",
+  "kb": 250
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_45.png",
+  "status": "ok",
+  "kb": 254
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_128.png",
+  "status": "ok",
+  "kb": 393
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_7.png",
+  "status": "ok",
+  "kb": 475
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_25.png",
+  "status": "ok",
+  "kb": 661
+ },
+ {
+  "path": "imagens/foregrounds/foregrounds_87.png",
+  "status": "ok",
+  "kb": 692
+ },
+ {
+  "path": "imagens/water/water_7.png",
+  "status": "ok",
+  "kb": 211
+ },
+ {
+  "path": "imagens/water/water_52.png",
+  "status": "ok",
+  "kb": 233
+ },
+ {
+  "path": "imagens/water/water_25.png",
+  "status": "ok",
+  "kb": 496
+ },
+ {
+  "path": "imagens/water/water_29.png",
+  "status": "ok",
+  "kb": 502
+ },
+ {
+  "path": "imagens/water/water_37.png",
+  "status": "ok",
+  "kb": 418
+ },
+ {
+  "path": "imagens/water/water_13.png",
+  "status": "ok",
+  "kb": 418
+ },
+ {
+  "path": "imagens/water/water_47.png",
+  "status": "ok",
+  "kb": 578
+ },
+ {
+  "path": "imagens/buildings/buildings_120.png",
+  "status": "ok",
+  "kb": 157
+ },
+ {
+  "path": "imagens/buildings/buildings_3.png",
+  "status": "ok",
+  "kb": 180
+ },
+ {
+  "path": "imagens/buildings/buildings_55.png",
+  "status": "ok",
+  "kb": 209
+ },
+ {
+  "path": "imagens/buildings/buildings_57.png",
+  "status": "ok",
+  "kb": 237
+ },
+ {
+  "path": "imagens/buildings/buildings_50.png",
+  "status": "ok",
+  "kb": 264
+ },
+ {
+  "path": "imagens/buildings/buildings_44.png",
+  "status": "ok",
+  "kb": 328
+ },
+ {
+  "path": "imagens/buildings/buildings_40.png",
+  "status": "ok",
+  "kb": 337
+ },
+ {
+  "path": "imagens/buildings/buildings_147.png",
+  "status": "ok",
+  "kb": 354
+ },
+ {
+  "path": "imagens/metro/metro_50.png",
+  "status": "ok",
+  "kb": 76
+ },
+ {
+  "path": "imagens/metro/metro_49.png",
+  "status": "ok",
+  "kb": 102
+ },
+ {
+  "path": "imagens/metro/metro_16.png",
+  "status": "ok",
+  "kb": 145
+ },
+ {
+  "path": "imagens/metro/metro_60.png",
+  "status": "ok",
+  "kb": 79
+ },
+ {
+  "path": "imagens/metro/metro_71.png",
+  "status": "ok",
+  "kb": 82
+ },
+ {
+  "path": "imagens/metro/metro_73.png",
+  "status": "ok",
+  "kb": 99
+ },
+ {
+  "path": "imagens/clouds/clouds_5.png",
+  "status": "ok",
+  "kb": 47
+ },
+ {
+  "path": "imagens/clouds/clouds_1.png",
+  "status": "ok",
+  "kb": 64
+ },
+ {
+  "path": "imagens/clouds/clouds_12.png",
+  "status": "ok",
+  "kb": 216
+ },
+ {
+  "path": "imagens/clouds/clouds_2.png",
+  "status": "ok",
+  "kb": 51
+ },
+ {
+  "path": "imagens/clouds/clouds_37.png",
+  "status": "ok",
+  "kb": 202
+ },
+ {
+  "path": "imagens/clouds/clouds_13.png",
+  "status": "ok",
+  "kb": 240
+ },
+ {
+  "path": "imagens/clouds/clouds_35.png",
+  "status": "ok",
+  "kb": 134
+ },
+ {
+  "path": "imagens/clouds/clouds_20.png",
+  "status": "ok",
+  "kb": 102
+ },
+ {
+  "path": "imagens/clouds/clouds_18.png",
+  "status": "ok",
+  "kb": 171
+ },
+ {
+  "path": "imagens/trees/trees_60.png",
+  "status": "ok",
+  "kb": 26
+ },
+ {
+  "path": "imagens/trees/trees_66.png",
+  "status": "ok",
+  "kb": 34
+ },
+ {
+  "path": "imagens/trees/trees_49.png",
+  "status": "ok",
+  "kb": 38
+ },
+ {
+  "path": "imagens/trees/trees_47.png",
+  "status": "ok",
+  "kb": 67
+ },
+ {
+  "path": "imagens/trees/trees_55.png",
+  "status": "ok",
+  "kb": 91
+ },
+ {
+  "path": "imagens/trees/trees_78.png",
+  "status": "ok",
+  "kb": 130
+ },
+ {
+  "path": "imagens/trees/trees_89.png",
+  "status": "ok",
+  "kb": 143
+ },
+ {
+  "path": "imagens/trees/trees_77.png",
+  "status": "ok",
+  "kb": 145
+ },
+ {
+  "path": "imagens/trees/trees_87.png",
+  "status": "ok",
+  "kb": 170
+ },
+ {
+  "path": "imagens/balloons/balloons_18.png",
+  "status": "ok",
+  "kb": 48
+ },
+ {
+  "path": "imagens/balloons/balloons_22.png",
+  "status": "ok",
+  "kb": 86
+ },
+ {
+  "path": "imagens/balloons/balloons_24.png",
+  "status": "ok",
+  "kb": 88
+ },
+ {
+  "path": "imagens/balloons/balloons_2.png",
+  "status": "ok",
+  "kb": 94
+ },
+ {
+  "path": "imagens/balloons/balloons_15.png",
+  "status": "ok",
+  "kb": 173
+ },
+ {
+  "path": "imagens/balloons/balloons_8.png",
+  "status": "ok",
+  "kb": 184
+ },
+ {
+  "path": "imagens/balloons/balloons_16.png",
+  "status": "ok",
+  "kb": 188
+ },
+ {
+  "path": "imagens/balloons/balloons_23.png",
+  "status": "ok",
+  "kb": 195
+ },
+ {
+  "path": "imagens/balloons/balloons_12.png",
+  "status": "ok",
+  "kb": 217
+ },
+ {
+  "path": "imagens/balloons/balloons_17.png",
+  "status": "ok",
+  "kb": 78
+ },
+ {
+  "path": "imagens/balloons/balloons_11.png",
+  "status": "ok",
+  "kb": 423
+ },
+ {
+  "path": "imagens/bubbles/bubbles_7.png",
+  "status": "ok",
+  "kb": 35
+ },
+ {
+  "path": "imagens/bubbles/bubbles_37.png",
+  "status": "ok",
+  "kb": 59
+ },
+ {
+  "path": "imagens/bubbles/bubbles_1.png",
+  "status": "ok",
+  "kb": 74
+ },
+ {
+  "path": "imagens/bubbles/bubbles_39.png",
+  "status": "ok",
+  "kb": 100
+ },
+ {
+  "path": "imagens/bubbles/bubbles_34.png",
+  "status": "ok",
+  "kb": 105
+ },
+ {
+  "path": "imagens/bubbles/bubbles_36.png",
+  "status": "ok",
+  "kb": 122
+ },
+ {
+  "path": "imagens/bubbles/bubbles_14.png",
+  "status": "ok",
+  "kb": 143
+ },
+ {
+  "path": "imagens/bubbles/bubbles_19.png",
+  "status": "ok",
+  "kb": 106
+ },
+ {
+  "path": "imagens/bubbles/bubbles_41.png",
+  "status": "ok",
+  "kb": 107
+ },
+ {
+  "path": "imagens/bubbles/bubbles_17.png",
+  "status": "ok",
+  "kb": 203
+ },
+ {
+  "path": "imagens/bubbles/bubbles_35.png",
+  "status": "ok",
+  "kb": 226
+ },
+ {
+  "path": "imagens/sealife/sealife_37.png",
+  "status": "ok",
+  "kb": 86
+ },
+ {
+  "path": "imagens/sealife/sealife_34.png",
+  "status": "ok",
+  "kb": 93
+ },
+ {
+  "path": "imagens/sealife/sealife_29.png",
+  "status": "ok",
+  "kb": 101
+ },
+ {
+  "path": "imagens/sealife/sealife_35.png",
+  "status": "ok",
+  "kb": 102
+ },
+ {
+  "path": "imagens/sealife/sealife_26.png",
+  "status": "ok",
+  "kb": 118
+ },
+ {
+  "path": "imagens/sealife/sealife_16.png",
+  "status": "ok",
+  "kb": 154
+ },
+ {
+  "path": "imagens/sealife/sealife_25.png",
+  "status": "ok",
+  "kb": 226
+ },
+ {
+  "path": "imagens/sealife/sealife_4.png",
+  "status": "ok",
+  "kb": 222
+ },
+ {
+  "path": "imagens/sealife/sealife_30.png",
+  "status": "ok",
+  "kb": 422
+ },
+ {
+  "path": "imagens/sealife/sealife_21.png",
+  "status": "ok",
+  "kb": 284
+ },
+ {
+  "path": "imagens/sealife/sealife_11.png",
+  "status": "ok",
+  "kb": 440
+ },
+ {
+  "path": "imagens/globes/globes_28.png",
+  "status": "ok",
+  "kb": 97
+ },
+ {
+  "path": "imagens/globes/globes_3.png",
+  "status": "ok",
+  "kb": 102
+ },
+ {
+  "path": "imagens/globes/globes_25.png",
+  "status": "ok",
+  "kb": 137
+ },
+ {
+  "path": "imagens/globes/globes_26.png",
+  "status": "ok",
+  "kb": 161
+ },
+ {
+  "path": "imagens/globes/globes_24.png",
+  "status": "ok",
+  "kb": 106
+ },
+ {
+  "path": "imagens/globes/globes_27.png",
+  "status": "ok",
+  "kb": 201
+ },
+ {
+  "path": "imagens/globes/globes_17.png",
+  "status": "ok",
+  "kb": 208
+ },
+ {
+  "path": "imagens/globes/globes_15.png",
+  "status": "ok",
+  "kb": 253
+ },
+ {
+  "path": "imagens/globes/globes_2.png",
+  "status": "ok",
+  "kb": 224
+ },
+ {
+  "path": "imagens/airplanes/airplanes_20.png",
+  "status": "ok",
+  "kb": 26
+ },
+ {
+  "path": "imagens/airplanes/airplanes_21.png",
+  "status": "ok",
+  "kb": 26
+ },
+ {
+  "path": "imagens/airplanes/airplanes_2.png",
+  "status": "ok",
+  "kb": 58
+ },
+ {
+  "path": "imagens/airplanes/airplanes_4.png",
+  "status": "ok",
+  "kb": 74
+ },
+ {
+  "path": "imagens/airplanes/airplanes_15.png",
+  "status": "ok",
+  "kb": 50
+ },
+ {
+  "path": "imagens/airplanes/airplanes_14.png",
+  "status": "ok",
+  "kb": 96
+ },
+ {
+  "path": "imagens/airplanes/airplanes_27.png",
+  "status": "ok",
+  "kb": 42
+ },
+ {
+  "path": "imagens/airplanes/airplanes_3.png",
+  "status": "ok",
+  "kb": 99
+ },
+ {
+  "path": "imagens/airplanes/airplanes_6.png",
+  "status": "ok",
+  "kb": 184
+ },
+ {
+  "path": "imagens/animals/animals_42.png",
+  "status": "ok",
+  "kb": 39
+ },
+ {
+  "path": "imagens/animals/animals_38.png",
+  "status": "ok",
+  "kb": 42
+ },
+ {
+  "path": "imagens/animals/animals_21.png",
+  "status": "ok",
+  "kb": 49
+ },
+ {
+  "path": "imagens/animals/animals_8.png",
+  "status": "ok",
+  "kb": 78
+ },
+ {
+  "path": "imagens/animals/animals_20.png",
+  "status": "ok",
+  "kb": 80
+ },
+ {
+  "path": "imagens/animals/animals_14.png",
+  "status": "ok",
+  "kb": 127
+ },
+ {
+  "path": "imagens/animals/animals_46.png",
+  "status": "ok",
+  "kb": 117
+ },
+ {
+  "path": "imagens/animals/animals_35.png",
+  "status": "ok",
+  "kb": 142
+ },
+ {
+  "path": "imagens/animals/animals_12.png",
+  "status": "ok",
+  "kb": 149
+ },
+ {
+  "path": "imagens/insects/insects_8.png",
+  "status": "ok",
+  "kb": 40
+ },
+ {
+  "path": "imagens/insects/insects_3.png",
+  "status": "ok",
+  "kb": 64
+ },
+ {
+  "path": "imagens/insects/insects_1.png",
+  "status": "ok",
+  "kb": 104
+ },
+ {
+  "path": "imagens/insects/insects_30.png",
+  "status": "ok",
+  "kb": 107
+ },
+ {
+  "path": "imagens/insects/insects_10.png",
+  "status": "ok",
+  "kb": 171
+ },
+ {
+  "path": "imagens/insects/insects_2.png",
+  "status": "ok",
+  "kb": 171
+ },
+ {
+  "path": "imagens/insects/insects_20.png",
+  "status": "ok",
+  "kb": 199
+ },
+ {
+  "path": "imagens/flares/flares_4.png",
+  "status": "ok",
+  "kb": 38
+ },
+ {
+  "path": "imagens/flares/flares_22.png",
+  "status": "ok",
+  "kb": 34
+ },
+ {
+  "path": "imagens/flares/flares_6.png",
+  "status": "ok",
+  "kb": 51
+ },
+ {
+  "path": "imagens/flares/flares_16.png",
+  "status": "ok",
+  "kb": 80
+ },
+ {
+  "path": "imagens/flares/flares_20.png",
+  "status": "ok",
+  "kb": 120
+ },
+ {
+  "path": "imagens/flares/flares_12.png",
+  "status": "ok",
+  "kb": 145
+ },
+ {
+  "path": "imagens/flares/flares_9.png",
+  "status": "ok",
+  "kb": 139
+ },
+ {
+  "path": "imagens/flares/flares_13.png",
+  "status": "ok",
+  "kb": 148
+ },
+ {
+  "path": "imagens/flares/flares_8.png",
+  "status": "ok",
+  "kb": 148
+ },
+ {
+  "path": "imagens/objects/objects_85.png",
+  "status": "ok",
+  "kb": 41
+ },
+ {
+  "path": "imagens/objects/objects_50.png",
+  "status": "ok",
+  "kb": 48
+ },
+ {
+  "path": "imagens/objects/objects_179.png",
+  "status": "ok",
+  "kb": 46
+ },
+ {
+  "path": "imagens/objects/objects_35.png",
+  "status": "ok",
+  "kb": 53
+ },
+ {
+  "path": "imagens/objects/objects_125.png",
+  "status": "ok",
+  "kb": 46
+ },
+ {
+  "path": "imagens/objects/objects_117.png",
+  "status": "ok",
+  "kb": 57
+ },
+ {
+  "path": "imagens/objects/objects_88.png",
+  "status": "ok",
+  "kb": 60
+ },
+ {
+  "path": "imagens/objects/objects_140.png",
+  "status": "ok",
+  "kb": 65
+ },
+ {
+  "path": "imagens/objects/objects_62.png",
+  "status": "ok",
+  "kb": 56
+ },
+ {
+  "path": "imagens/objects/objects_136.png",
+  "status": "ok",
+  "kb": 66
+ },
+ {
+  "path": "imagens/objects/objects_40.png",
+  "status": "ok",
+  "kb": 75
+ },
+ {
+  "path": "imagens/objects/objects_89.png",
+  "status": "ok",
+  "kb": 61
+ },
+ {
+  "path": "imagens/objects/objects_126.png",
+  "status": "ok",
+  "kb": 72
+ },
+ {
+  "path": "imagens/objects/objects_78.png",
+  "status": "ok",
+  "kb": 63
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_5.png",
+  "status": "ok",
+  "kb": 25
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_34.png",
+  "status": "ok",
+  "kb": 29
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_1.png",
+  "status": "ok",
+  "kb": 34
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_6.png",
+  "status": "ok",
+  "kb": 34
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_23.png",
+  "status": "ok",
+  "kb": 36
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_3.png",
+  "status": "ok",
+  "kb": 37
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_33.png",
+  "status": "ok",
+  "kb": 38
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_41.png",
+  "status": "ok",
+  "kb": 62
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_49.png",
+  "status": "ok",
+  "kb": 65
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_38.png",
+  "status": "ok",
+  "kb": 28
+ },
+ {
+  "path": "imagens/miscellaneous/miscellaneous_14.png",
+  "status": "ok",
+  "kb": 72
+ },
+ {
+  "path": "imagens/furniture/furniture_19.png",
+  "status": "ok",
+  "kb": 47
+ },
+ {
+  "path": "imagens/furniture/furniture_13.png",
+  "status": "ok",
+  "kb": 111
+ },
+ {
+  "path": "imagens/furniture/furniture_3.png",
+  "status": "ok",
+  "kb": 112
+ },
+ {
+  "path": "imagens/furniture/furniture_16.png",
+  "status": "ok",
+  "kb": 91
+ },
+ {
+  "path": "imagens/furniture/furniture_20.png",
+  "status": "ok",
+  "kb": 185
+ },
+ {
+  "path": "imagens/furniture/furniture_21.png",
+  "status": "ok",
+  "kb": 193
+ },
+ {
+  "path": "imagens/furniture/furniture_11.png",
+  "status": "ok",
+  "kb": 220
+ },
+ {
+  "path": "imagens/people/people_13.png",
+  "status": "ok",
+  "kb": 31
+ },
+ {
+  "path": "imagens/people/people_26.png",
+  "status": "ok",
+  "kb": 32
+ },
+ {
+  "path": "imagens/people/people_22.png",
+  "status": "ok",
+  "kb": 35
+ },
+ {
+  "path": "imagens/people/people_55.png",
+  "status": "ok",
+  "kb": 31
+ },
+ {
+  "path": "imagens/people/people_16.png",
+  "status": "ok",
+  "kb": 38
+ },
+ {
+  "path": "imagens/people/people_29.png",
+  "status": "ok",
+  "kb": 42
+ },
+ {
+  "path": "imagens/people/people_30.png",
+  "status": "ok",
+  "kb": 42
+ }
+]
