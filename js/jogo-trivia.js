@@ -48,7 +48,13 @@
     }
   }
 
+  function verPalco() {
+    const palco = document.querySelector(".palco-jogo");
+    if (palco && FGA.jogoUtil && FGA.jogoUtil.trazerParaTela) FGA.jogoUtil.trazerParaTela(palco, 170);
+  }
+
   function iniciar() {
+    verPalco();
     estado.perguntas = embaralhar(FGA.trivia || [])
       .slice(0, TOTAL)
       .map((p) => {
@@ -148,7 +154,7 @@
         setTimeout(() => el.remove(), 950);
       }
       if (feedback) {
-        feedback.innerHTML = `<strong>✅ Certo! +${ganho} pontos</strong>${p.explica}`;
+        feedback.innerHTML = `${FGA.icones.html("sucesso", "ico--chip")} <strong>Certo! +${ganho} pontos</strong>${p.explica}`;
         feedback.hidden = false;
         feedback.style.animation = "entrarBalao .3s ease-out";
       }
@@ -157,7 +163,7 @@
       FGA.audio && FGA.audio.sfx("erro");
       if (feedback) {
         const tempo = certa === null ? "O tempo acabou." : "Não foi essa.";
-        feedback.innerHTML = `<strong>${certa === null ? "⏰ " + tempo : "❌ " + tempo}</strong>${p.explica}`;
+        feedback.innerHTML = `${FGA.icones.html(certa === null ? "aviso" : "erro", "ico--chip")} <strong>${tempo}</strong>${p.explica}`;
         feedback.hidden = false;
       }
     }
@@ -188,24 +194,25 @@
     FGA.recorde.registrar("trivia", "Você", Math.round(estado.pontos));
     const acertos = estado.acertos;
     const conceito =
-      acertos >= 10 ? "Arquivista do Frutiger Aero 🏆" :
-      acertos >= 8 ? "Curador de acervo 🥇" :
-      acertos >= 6 ? "Fã de vidro e bolhas 🥈" :
-      acertos >= 4 ? "Visitante curioso 🥉" : "Turista do 56k 📼";
+      acertos >= 10 ? "Arquivista do Frutiger Aero" :
+      acertos >= 8 ? "Curador de acervo" :
+      acertos >= 6 ? "Fã de vidro e bolhas" :
+      acertos >= 4 ? "Visitante curioso" : "Turista do 56k";
     FGA.audio && FGA.audio.sfx(novo ? "estrela" : "acerto");
 
     if (areaPontos) areaPontos.innerHTML = "";
     palco.innerHTML = "";
     mostrarSobreposicao({
-      titulo: novo ? "🏆 Novo recorde!" : "📊 Resultado final",
+      icone: novo ? "sucesso" : "desempenho",
+      titulo: novo ? "Novo recorde!" : "Resultado final",
       texto: `Você acertou <strong>${acertos} de ${TOTAL}</strong> e fez <strong>${Math.round(estado.pontos).toLocaleString("pt-BR")}</strong> pontos.<br>
         Melhor sequência: <strong>${estado.melhorSequencia}</strong> · Recorde neste navegador: ${recorde.toLocaleString("pt-BR")}<br>
         Seu título: <strong>${conceito}</strong>`,
       html: resumoHtml(),
       acoes: [
-        { texto: "↻ Jogar novamente", classe: "botao--verde", aoClicar: iniciar },
-        { texto: "📚 Ler as curiosidades", classe: "botao--ciano", aoClicar: () => (window.location.href = "curiosidades.html") },
-        { texto: "🎮 Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
+        { texto: "Jogar novamente", classe: "botao--verde", aoClicar: iniciar },
+        { texto: "Ler as curiosidades", classe: "botao--ciano", aoClicar: () => (window.location.href = "curiosidades.html") },
+        { texto: "Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
       ],
     });
   }
@@ -214,17 +221,20 @@
     const itens = estado.respondidas
       .map(
         (r, i) =>
-          `<li><strong>${r.certa ? "✅" : "❌"} ${i + 1}.</strong> ${r.pergunta} <em>(${r.ganho > 0 ? "+" + r.ganho : "0"} pts)</em></li>`
+          `<li>${FGA.icones.html(r.certa ? "sucesso" : "erro", "ico--chip")} <strong>${i + 1}.</strong> ${r.pergunta} <em>(${r.ganho > 0 ? "+" + r.ganho : "0"} pts)</em></li>`
       )
       .join("");
     return `<details class="acordeao"><summary>Revisar as ${estado.respondidas.length} perguntas</summary><ul class="lista-bolha">${itens}</ul></details>`;
   }
 
-  function mostrarSobreposicao({ titulo, texto, html = "", acoes = [] }) {
+  function mostrarSobreposicao({ titulo, icone, texto, html = "", acoes = [] }) {
     if (!sobreposicao) return;
     sobreposicao.innerHTML = "";
     const caixa = criar("div", { classe: "sobreposicao__caixa" });
-    caixa.append(criar("h2", { html: titulo }), criar("p", { html: texto }));
+    const h = criar("h2", { classe: icone ? "icone-titulo" : "" });
+    if (icone && FGA.icones) h.append(FGA.icones.el(icone));
+    h.append(criar("span", { html: titulo }));
+    caixa.append(h, criar("p", { html: texto }));
     if (html) caixa.insertAdjacentHTML("beforeend", html);
     const acoesEl = criar("div", { classe: "sobreposicao__acoes" });
     acoes.forEach((a) => {
@@ -238,6 +248,7 @@
     caixa.append(acoesEl);
     sobreposicao.append(caixa);
     sobreposicao.hidden = false;
+    if (FGA.jogoUtil && FGA.jogoUtil.trazerParaTela) FGA.jogoUtil.trazerParaTela(caixa, 170);
   }
 
   function esconderSobreposicao() {
@@ -249,11 +260,12 @@
       clearInterval(estado.timer);
       estado.timer = null;
       mostrarSobreposicao({
-        titulo: "⏸ Pausa",
+        icone: "aviso",
+        titulo: "Pausa",
         texto: "O relógio parou. Continue quando quiser.",
         acoes: [
-          { texto: "▶ Continuar", classe: "botao--verde", aoClicar: () => { esconderSobreposicao(); cronometrar(); } },
-          { texto: "↻ Recomeçar", classe: "botao--fantasma", aoClicar: iniciar },
+          { texto: "Continuar", classe: "botao--verde", aoClicar: () => { esconderSobreposicao(); cronometrar(); } },
+          { texto: "Recomeçar", classe: "botao--fantasma", aoClicar: iniciar },
         ],
       });
     }
@@ -261,13 +273,14 @@
 
   atualizarHUD();
   mostrarSobreposicao({
-    titulo: "🧠 Trivia Aero",
+    titulo: "Trivia Aero",
+    icone: "curiosidades",
     texto:
       "Dez perguntas sorteadas sobre a estética Frutiger Aero, o Windows Vista/7 e a internet dos anos 2000 no Brasil. Cada resposta vem com explicação e as fontes estão na página de créditos.",
     html: `<ul class="sobreposicao__dicas"><li>Acerto base: <strong>100 pontos</strong></li><li>Bônus por rapidez: até <strong>+100</strong></li><li>Sequência de acertos: <strong>+25</strong> por nível</li><li>25 segundos por pergunta</li></ul>`,
     acoes: [
-      { texto: "▶ Começar", classe: "botao--verde", aoClicar: iniciar },
-      { texto: "🎮 Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
+      { texto: "Começar", classe: "botao--verde", aoClicar: iniciar },
+      { texto: "Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
     ],
   });
 })();

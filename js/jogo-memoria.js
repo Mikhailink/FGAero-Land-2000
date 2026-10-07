@@ -80,6 +80,11 @@
     }, 200);
   }
 
+  function verPalco() {
+    const palco = document.querySelector(".palco-jogo");
+    if (palco && FGA.jogoUtil && FGA.jogoUtil.trazerParaTela) FGA.jogoUtil.trazerParaTela(palco, 170);
+  }
+
   function montarTabuleiro() {
     const cfg = NIVEIS[estado.nivel];
     quadro.style.setProperty("--colunas", cfg.colunas);
@@ -206,22 +211,26 @@
     FGA.recorde.registrar("memoria", "Você", Math.round(estado.pontos));
     FGA.audio && FGA.audio.sfx(novo ? "estrela" : "acerto");
     mostrarSobreposicao({
-      titulo: novo ? "🏆 Novo recorde!" : "🎉 Tabuleiro completo!",
+      titulo: novo ? "Novo recorde!" : "Tabuleiro completo!",
+      icone: novo ? "sucesso" : "jogos",
       texto: `Nível <strong>${NIVEIS[estado.nivel].nome}</strong> resolvido em <strong>${segundos.toFixed(1)}s</strong> com <strong>${estado.jogadas}</strong> jogadas (${estado.erros} erros).<br>
         Pontos: <strong>${Math.round(estado.pontos).toLocaleString("pt-BR")}</strong> (bônus de tempo: +${bonusTempo}) · Recorde: ${recorde.toLocaleString("pt-BR")}`,
       acoes: [
-        { texto: "↻ Jogar de novo", classe: "botao--verde", aoClicar: montarTabuleiro },
-        { texto: "🎚️ Trocar nível", classe: "botao--fantasma", aoClicar: () => menuInicial() },
-        { texto: "🎮 Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
+        { texto: "Jogar de novo", classe: "botao--verde", aoClicar: montarTabuleiro },
+        { texto: "Trocar nível", classe: "botao--fantasma", aoClicar: () => menuInicial() },
+        { texto: "Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
       ],
     });
   }
 
-  function mostrarSobreposicao({ titulo, texto, acoes = [] }) {
+  function mostrarSobreposicao({ titulo, icone, texto, acoes = [] }) {
     if (!sobreposicao) return;
     sobreposicao.innerHTML = "";
     const caixa = criar("div", { classe: "sobreposicao__caixa" });
-    caixa.append(criar("h2", { html: titulo }), criar("p", { html: texto }));
+    const h = criar("h2", { classe: icone ? "icone-titulo" : "" });
+    if (icone && FGA.icones) h.append(FGA.icones.el(icone));
+    h.append(criar("span", { html: titulo }));
+    caixa.append(h, criar("p", { html: texto }));
     const acoesEl = criar("div", { classe: "sobreposicao__acoes" });
     acoes.forEach((a) => {
       const b = criar("button", { classe: "botao " + (a.classe || ""), type: "button", texto: a.texto });
@@ -234,6 +243,7 @@
     caixa.append(acoesEl);
     sobreposicao.append(caixa);
     sobreposicao.hidden = false;
+    if (FGA.jogoUtil && FGA.jogoUtil.trazerParaTela) FGA.jogoUtil.trazerParaTela(caixa, 170);
   }
 
   function esconderSobreposicao() {
@@ -242,14 +252,15 @@
 
   function menuInicial() {
     mostrarSobreposicao({
-      titulo: "🃏 Memória Gloss",
+      titulo: "Memória Gloss",
+      icone: "jogos",
       texto:
         "Encontre os pares de imagens do acervo. Escolha um nível para começar — o recorde é salvo neste navegador.",
       acoes: Object.entries(NIVEIS).map(([chave, cfg], i) => ({
         texto: `${cfg.nome} · ${cfg.pares} pares`,
         classe: i === 0 ? "botao--verde" : i === 1 ? "botao--ciano" : "botao--laranja",
         aoClicar: () => iniciarNivel(chave),
-      })).concat([{ texto: "🎮 Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") }]),
+      })).concat([{ texto: "Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") }]),
     });
   }
 
@@ -257,6 +268,7 @@
     estado.nivel = chave;
     FGA.armazem.gravar("memoriaNivel", chave);
     esconderSobreposicao();
+    verPalco();
     montarTabuleiro();
     FGA.toast("Nível " + NIVEIS[chave].nome, NIVEIS[chave].pares + " pares embaralhados. Boa sorte!", "bom");
   }
@@ -268,9 +280,10 @@
       clearInterval(estado.timer);
       estado.timer = null;
       mostrarSobreposicao({
-        titulo: "⏸ Pausa",
+        icone: "aviso",
+        titulo: "Pausa",
         texto: "O tabuleiro fica esperando.",
-        acoes: [{ texto: "▶ Continuar", classe: "botao--verde", aoClicar: () => { esconderSobreposicao(); cronometrar(); } }],
+        acoes: [{ texto: "Continuar", classe: "botao--verde", aoClicar: () => { esconderSobreposicao(); cronometrar(); } }],
       });
     }
   });

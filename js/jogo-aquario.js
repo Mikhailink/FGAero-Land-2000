@@ -268,7 +268,7 @@
       ctx.strokeStyle = "rgba(10,50,95,0.45)";
       ctx.lineWidth = 4;
       ctx.textAlign = "left";
-      const txt = "🖼️ " + FGA.imagem.nome(estado.selecionado) + " — clique no palco para posicionar";
+      const txt = FGA.imagem.nome(estado.selecionado) + " — clique no palco para posicionar";
       ctx.strokeText(txt, 24, 40);
       ctx.fillText(txt, 24, 40);
       ctx.restore();

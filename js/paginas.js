@@ -9,6 +9,13 @@
   const FGA = window.FGA || {};
   const { $, $$, criar, escolher, inteiro, embaralhar, normalizar } = FGA.util;
 
+  /* bolha redonda com o ícone do Windows Vista da curiosidade */
+  function bolhaIcone(chave) {
+    const bolha = criar("span", { classe: "curiosidade__icone", "aria-hidden": "true" });
+    bolha.append(FGA.icones.el(chave || "curiosidades", { classe: "ico--gg" }));
+    return bolha;
+  }
+
   /* ---------- Linha do tempo ---------- */
   function montarLinhaDoTempo(alvo) {
     if (!alvo) return;
@@ -46,7 +53,7 @@
       criar("button", {
         classe: "janela__botao janela__botao--fechar",
         type: "button",
-        texto: "✕",
+        texto: "×",
         "aria-label": "Fechar",
       })
     );
@@ -58,7 +65,13 @@
     const acoes = criar("div", { classe: "lightbox__navegar" });
     const anterior = criar("button", { classe: "botao botao--pequeno botao--fantasma", type: "button", texto: "← Anterior" });
     const proximo = criar("button", { classe: "botao botao--pequeno botao--fantasma", type: "button", texto: "Próxima →" });
-    const baixar = criar("a", { classe: "botao botao--pequeno botao--verde", texto: "⤓ Original", target: "_blank", rel: "noopener" });
+    const baixar = criar("a", {
+      classe: "botao botao--pequeno botao--verde",
+      html: FGA.icones.html("galeria", "ico--botao") + "<span>Original</span>",
+      title: "Abrir a imagem original em tamanho cheio",
+      target: "_blank",
+      rel: "noopener",
+    });
     const github = criar("a", { classe: "botao botao--pequeno", texto: "Ver no GitHub", target: "_blank", rel: "noopener" });
 
     acoes.append(anterior, proximo, baixar, github);
@@ -167,7 +180,7 @@
     }
 
     if (comFiltros) {
-      const opcoes = [{ id: "todas", rotulo: "Todas", icone: "✳️" }].concat(
+      const opcoes = [{ id: "todas", rotulo: "Todas", amostra: null }].concat(
         (FGA.categorias || []).filter((c) => (FGA.acervo[c.id] || []).length)
       );
       opcoes.forEach((c) => {
@@ -175,8 +188,18 @@
           classe: "filtro",
           type: "button",
           "aria-pressed": String(c.id === inicial),
-          html: `${c.icone || ""} ${c.rotulo} <small>(${(FGA.acervo[c.id] || []).length})</small>`,
         });
+        if (c.amostra) {
+          const mini = document.createElement("img");
+          mini.className = "filtro__mini";
+          mini.src = FGA.imagem.url(c.amostra);
+          mini.alt = "";
+          mini.setAttribute("aria-hidden", "true");
+          mini.loading = "lazy";
+          b.append(mini);
+        }
+        const quantos = c.id === "todas" ? FGA.totalLocal || FGA.acervo.todas?.length || 0 : (FGA.acervo[c.id] || []).length;
+        b.append(criar("span", { texto: c.rotulo }), criar("small", { texto: "(" + quantos + ")" }));
         b.addEventListener("click", () => {
           filtro = c.id;
           mostrando = limite || todos.length;
@@ -223,7 +246,7 @@
       criar("button", {
         classe: "botao botao--pequeno botao--fantasma",
         type: "button",
-        texto: "🎲 Sortear outras",
+        texto: "Sortear outras",
         onclick: () => {
           alvo.innerHTML = "";
           montarFaixaAcervo(alvo, quantidade);
@@ -244,12 +267,13 @@
     if (!alvo) return;
     const grade = criar("div", { classe: "grade grade--3" });
     (FGA.curiosidades || []).forEach((c) => {
+      const bolha = bolhaIcone(c.icone);
       grade.append(
         criar("article", { classe: "curiosidade surgir" }, [
-          criar("span", { classe: "curiosidade__icone", texto: c.icone, "aria-hidden": "true" }),
+          bolha,
           criar("div", {}, [
             criar("h3", { classe: "curiosidade__titulo", texto: c.titulo }),
-            criar("p", { classe: "curiosidade__texto", texto: c.texto }),
+            criar("p", { classe: "curiosidade__texto", html: c.texto }),
           ]),
         ])
       );
@@ -258,11 +282,14 @@
   }
 
   /* ---------- Widget: gerador de apelido MSN ---------- */
+  /* enfeites no estilo dos apelidos de 2004 — só caracteres tipográficos,
+     porque os pictográficos do site foram trocados pelos ícones do Vista */
   const enfeites = [
-    "★", "☆", "♥", "•°", "°•", "º°", "ツ", "♫", "♪", "☼", "❀", "✿", "→", "ツ", "εïз", "•́.•̀", "٭", "☁",
+    "•°", "°•", "º°", "ツ", "εïз", "٭", "~*", "*~", "><", "xX", "Xx", ":::",
+    "^", "-_-", "._.", "(((", ")))", "///", "=", "*", "~",
   ];
   const sufixos = [
-    "no msn", "™", "®", "do barulho", "em 56k", "do Aqua", "┌∩┐", "vmk", "♥~", "(¬_¬)", "ツ",
+    "no msn", "™", "®", "do barulho", "em 56k", "do Aqua", "vmk", "(¬_¬)", "ツ", "^^", "~",
   ];
 
   function montarGeradorApelido(alvo) {
@@ -277,7 +304,7 @@
     const saida = criar("p", {
       classe: "trivia__enunciado",
       style: "min-height:2.6em; font-family:var(--fonte-mono); font-size:1.02rem",
-      texto: "★•°•.¸ ツ",
+      texto: "•°•.¸ ツ",
     });
     const botao = criar("button", { classe: "botao botao--pequeno botao--verde", type: "button", texto: "Gerar apelido" });
 
@@ -313,8 +340,14 @@
     const moldura = criar("div", { classe: "galeria__moldura", style: "aspect-ratio:16/9; border-radius:14px" });
     const legenda = criar("p", { classe: "dica-uso" });
     const acoes = criar("div", { classe: "empilhado" });
-    const sortear = criar("button", { classe: "botao botao--pequeno botao--ciano", type: "button", texto: "🎲 Sortear papel de parede" });
-    const usar = criar("a", { classe: "botao botao--pequeno botao--verde", texto: "⤓ Baixar original", target: "_blank", rel: "noopener" });
+    const sortear = criar("button", { classe: "botao botao--pequeno botao--ciano", type: "button" });
+    sortear.append(FGA.icones.el("cenario", { classe: "ico--botao" }), criar("span", { texto: "Sortear papel de parede" }));
+    const usar = criar("a", {
+      classe: "botao botao--pequeno botao--verde",
+      html: FGA.icones.html("galeria", "ico--botao") + "<span>Baixar original</span>",
+      target: "_blank",
+      rel: "noopener",
+    });
 
     function novo() {
       const rel = FGA.imagem.sprite("skyboxes", inteiro(0, 999));
@@ -344,7 +377,8 @@
     const grade = criar("div", { classe: "grade grade--3" });
     (FGA.jogos || []).forEach((jogo, i) => {
       const palco = criar("div", { classe: "cartao-jogo__palco" });
-      const sprite = FGA.imagem.sprite(jogo.sprite, i * 3 + 1);
+      /* semente fixa por jogo (evita sorteio de imagem quase invisível no cartão) */
+      const sprite = FGA.imagem.sprite(jogo.sprite, jogo.semente ?? i * 3 + 1);
       if (sprite) palco.append(FGA.imagem.tag(sprite, { deco: true, alt: "" }));
       for (let b = 0; b < 4; b++) {
         const bolha = criar("span", { classe: "cartao-jogo__bolha", "aria-hidden": "true" });
@@ -361,8 +395,18 @@
             criar("p", { texto: jogo.resumo, style: "font-size:.93rem;margin-bottom:.3rem" }),
             criar("p", { classe: "dica-uso", html: "<strong>Como jogar:</strong> " + jogo.como }),
             criar("div", { classe: "empilhado" }, [
-              criar("a", { classe: "botao botao--pequeno", href: jogo.rota, texto: "▶ Jogar agora" }),
-              recorde ? criar("span", { classe: "recorde-chip", texto: "🏆 Recorde: " + recorde.toLocaleString("pt-BR") }) : null,
+              (() => {
+                const b = criar("a", { classe: "botao botao--pequeno", href: jogo.rota });
+                b.append(FGA.icones.el(jogo.icone || "jogos", { classe: "ico--botao" }), criar("span", { texto: "Jogar agora" }));
+                return b;
+              })(),
+              recorde
+                ? (() => {
+                    const chip = criar("span", { classe: "recorde-chip" });
+                    chip.append(FGA.icones.el("sucesso", { classe: "ico--chip" }), criar("span", { texto: "Recorde: " + recorde.toLocaleString("pt-BR") }));
+                    return chip;
+                  })()
+                : null,
             ]),
           ]),
         ])
@@ -376,6 +420,16 @@
     if (!alvo || !FGA.creditos) return;
     const c = FGA.creditos;
     const grade = criar("div", { classe: "grade grade--2" });
+    [c.musica, c.icones].forEach((extra) => {
+      if (!extra) return;
+      grade.append(
+        criar("article", { classe: "cartao cartao--destaque surgir" }, [
+          criar("span", { classe: "cartao__rotulo", texto: "trilha e ícones" }),
+          criar("h3", {}, [criar("a", { href: extra.url, target: "_blank", rel: "noopener", texto: extra.nome })]),
+          criar("p", { texto: extra.o, style: "font-size:.93rem;margin:0" }),
+        ])
+      );
+    });
     c.fontes.forEach((f) => {
       grade.append(
         criar("article", { classe: "cartao surgir" }, [
@@ -393,8 +447,19 @@
     if (!alvo) return;
     (FGA.categorias || []).forEach((c) => {
       const tr = criar("tr");
+      const th = criar("th", { scope: "row" });
+      if (c.amostra) {
+        const mini = document.createElement("img");
+        mini.className = "tabela__mini";
+        mini.src = FGA.imagem.url(c.amostra);
+        mini.alt = "";
+        mini.setAttribute("aria-hidden", "true");
+        mini.loading = "lazy";
+        th.append(mini);
+      }
+      th.append(document.createTextNode(c.rotulo));
       tr.append(
-        criar("th", { scope: "row", html: `${c.icone} ${c.rotulo}` }),
+        th,
         criar("td", { texto: c.local ? c.local + " imagens" : "—" }),
         criar("td", { texto: c.total + " arquivos" }),
         criar("td", { texto: c.descricao })
@@ -427,7 +492,7 @@
       if (memoriaMov) {
         alvo.append(criar("li", {}, [
           criar("span", { texto: "Nível salvo na memória: " + memoriaMov }),
-          criar("span", { classe: "recordes__pontos", texto: "🎚️" }),
+          (() => { const c = criar("span", { classe: "recordes__pontos" }); c.append(FGA.icones.el("desempenho", { classe: "ico--chip" })); return c; })(),
         ]));
       }
       if (!algum)
@@ -473,7 +538,11 @@
         const grande = !gradePrincipal.classList.contains("galeria--grande");
         gradePrincipal.classList.toggle("galeria--grande", grande);
         botaoTamanho.setAttribute("aria-pressed", String(grande));
-        botaoTamanho.textContent = grande ? "🔍 Voltar ao tamanho normal" : "🔍 Alternar tamanho das miniaturas";
+        botaoTamanho.innerHTML = "";
+        botaoTamanho.append(
+          FGA.icones.el("busca", { classe: "ico--botao" }),
+          criar("span", { texto: grande ? "Voltar ao tamanho normal" : "Alternar tamanho das miniaturas" })
+        );
         FGA.audio && FGA.audio.sfx("clique");
       });
     }
@@ -503,10 +572,10 @@
           caixa.innerHTML = "";
           caixa.append(
             criar("article", { classe: "curiosidade" }, [
-              criar("span", { classe: "curiosidade__icone", texto: c.icone, "aria-hidden": "true" }),
+              bolhaIcone(c.icone),
               criar("div", {}, [
                 criar("h3", { classe: "curiosidade__titulo", texto: c.titulo }),
-                criar("p", { classe: "curiosidade__texto", texto: c.texto }),
+                criar("p", { classe: "curiosidade__texto", html: c.texto }),
               ]),
             ])
           );
@@ -522,10 +591,10 @@
       if (c) {
         destaque.append(
           criar("article", { classe: "curiosidade" }, [
-            criar("span", { classe: "curiosidade__icone", texto: c.icone, "aria-hidden": "true" }),
+            bolhaIcone(c.icone),
             criar("div", {}, [
               criar("h3", { classe: "curiosidade__titulo", texto: c.titulo }),
-              criar("p", { classe: "curiosidade__texto", texto: c.texto }),
+              criar("p", { classe: "curiosidade__texto", html: c.texto }),
             ]),
           ])
         );

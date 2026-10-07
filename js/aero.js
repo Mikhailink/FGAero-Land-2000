@@ -1,9 +1,9 @@
 /* ==========================================================================
    FGAero Land 2000 — aero.js
-   Núcleo do site: utilitários, armazenamento seguro, áudio (efeitos + música
-   procedural), acervo de imagens, cenários de céu, bolhas de fundo, navegação,
-   animações de entrada, toasts, dock, janelas flutuantes e o AeroBot (chat).
-   Requer js/acervo.js e js/conteudo.js carregados antes.
+   Núcleo do site: utilitários, armazenamento seguro, áudio (efeitos + trilha
+   sintetizada), álbum do YouTube, acervo de imagens, cenários de céu, bolhas
+   de fundo, navegação, animações de entrada, toasts, dock, janelas flutuantes
+   e o AeroBot (chat). Requer js/acervo.js, js/conteudo.js e js/icones.js.
    ========================================================================== */
 (function () {
   "use strict";
@@ -100,9 +100,22 @@
     },
   };
 
-  /* ---------- 3. Áudio: efeitos e música procedural ---------- */
-  const notasMIDI = [0, 2, 4, 5, 7, 9, 11];
+  /* ---------- 3. Áudio: efeitos e trilha sintetizada ---------- */
   const freq = (midi) => 440 * Math.pow(2, (midi - 69) / 12);
+
+  /* nomes em português -> valores válidos de OscillatorType.
+     (as faixas usavam "seno"/"triangulo"/"quadrada" direto, o que fazia o
+     navegador reclamar no console e cair no tipo padrão) */
+  const TIPOS_OSC = {
+    seno: "sine",
+    sine: "sine",
+    triangulo: "triangle",
+    triangle: "triangle",
+    quadrada: "square",
+    square: "square",
+    dente: "sawtooth",
+    sawtooth: "sawtooth",
+  };
 
   const faixas = [
     {
@@ -149,6 +162,7 @@
     _passo: 0,
     _proximo: 0,
     _timer: null,
+    aoMudar: null,
 
     desbloquear() {
       if (!this.ctx) {
@@ -160,7 +174,7 @@
           return null;
         }
         this.mestre = this.ctx.createGain();
-        this.mestre.gain.value = 0.9;
+        this.mestre.gain.value = 0.9 * this.volume;
         this.mestre.connect(this.ctx.destination);
 
         this.ganhoMusica = this.ctx.createGain();
@@ -187,12 +201,12 @@
     },
 
     /* --- efeitos pontuais --- */
-    tom({ f = 660, dur = 0.14, tipo = "seno", vol = 0.22, atraso = 0, desliza = null }) {
+    tom({ f = 660, dur = 0.14, tipo = "sine", vol = 0.22, atraso = 0, desliza = null }) {
       if (!this.ligado || !this.ctx) return;
       const t0 = this.ctx.currentTime + atraso;
       const osc = this.ctx.createOscillator();
       const g = this.ctx.createGain();
-      osc.type = tipo;
+      osc.type = TIPOS_OSC[tipo] || tipo;
       osc.frequency.setValueAtTime(f, t0);
       if (desliza) osc.frequency.exponentialRampToValueAtTime(Math.max(40, desliza), t0 + dur);
       g.gain.setValueAtTime(0.0001, t0);
@@ -225,48 +239,48 @@
       if (!this.ligado) return;
       switch (nome) {
         case "clique":
-          this.tom({ f: 880, dur: 0.09, tipo: "seno", vol: 0.16 });
-          this.tom({ f: 1320, dur: 0.07, tipo: "seno", vol: 0.1, atraso: 0.05 });
+          this.tom({ f: 880, dur: 0.09, tipo: "sine", vol: 0.16 });
+          this.tom({ f: 1320, dur: 0.07, tipo: "sine", vol: 0.1, atraso: 0.05 });
           break;
         case "vidro":
-          this.tom({ f: 1180, dur: 0.5, tipo: "seno", vol: 0.14 });
-          this.tom({ f: 1760, dur: 0.42, tipo: "seno", vol: 0.08, atraso: 0.05 });
+          this.tom({ f: 1180, dur: 0.5, tipo: "sine", vol: 0.14 });
+          this.tom({ f: 1760, dur: 0.42, tipo: "sine", vol: 0.08, atraso: 0.05 });
           break;
         case "bolha":
-          this.tom({ f: aleatorio(520, 900), dur: 0.12, tipo: "seno", vol: 0.2, desliza: aleatorio(240, 420) });
+          this.tom({ f: aleatorio(520, 900), dur: 0.12, tipo: "sine", vol: 0.2, desliza: aleatorio(240, 420) });
           break;
         case "acerto":
           [0, 4, 7, 12].forEach((s, i) =>
-            this.tom({ f: freq(72 + s), dur: 0.2, tipo: "triangulo", vol: 0.16, atraso: i * 0.06 })
+            this.tom({ f: freq(72 + s), dur: 0.2, tipo: "triangle", vol: 0.16, atraso: i * 0.06 })
           );
           break;
         case "erro":
-          this.tom({ f: 220, dur: 0.22, tipo: "quadrada", vol: 0.12, desliza: 140 });
-          this.tom({ f: 165, dur: 0.26, tipo: "quadrada", vol: 0.1, atraso: 0.12 });
+          this.tom({ f: 220, dur: 0.22, tipo: "square", vol: 0.12, desliza: 140 });
+          this.tom({ f: 165, dur: 0.26, tipo: "square", vol: 0.1, atraso: 0.12 });
           break;
         case "respingo":
           this.ruido({ dur: 0.3, vol: 0.16, corte: 2200 });
-          this.tom({ f: 480, dur: 0.16, tipo: "seno", vol: 0.12, desliza: 900 });
+          this.tom({ f: 480, dur: 0.16, tipo: "sine", vol: 0.12, desliza: 900 });
           break;
         case "estrela":
           [0, 7, 12, 19].forEach((s, i) =>
-            this.tom({ f: freq(76 + s), dur: 0.3, tipo: "seno", vol: 0.13, atraso: i * 0.075 })
+            this.tom({ f: freq(76 + s), dur: 0.3, tipo: "sine", vol: 0.13, atraso: i * 0.075 })
           );
           break;
         case "aviso":
-          this.tom({ f: 520, dur: 0.16, tipo: "triangulo", vol: 0.14 });
-          this.tom({ f: 390, dur: 0.2, tipo: "triangulo", vol: 0.12, atraso: 0.14 });
+          this.tom({ f: 520, dur: 0.16, tipo: "triangle", vol: 0.14 });
+          this.tom({ f: 390, dur: 0.2, tipo: "triangle", vol: 0.12, atraso: 0.14 });
           break;
         case "mensagem":
-          this.tom({ f: 990, dur: 0.1, tipo: "seno", vol: 0.14 });
-          this.tom({ f: 1480, dur: 0.12, tipo: "seno", vol: 0.11, atraso: 0.08 });
+          this.tom({ f: 990, dur: 0.1, tipo: "sine", vol: 0.14 });
+          this.tom({ f: 1480, dur: 0.12, tipo: "sine", vol: 0.11, atraso: 0.08 });
           break;
         default:
           this.tom({ f: 740, dur: 0.1, vol: 0.14 });
       }
     },
 
-    /* --- música em tempo real --- */
+    /* --- trilha sintetizada em tempo real --- */
     tocar(indice) {
       this.desbloquear();
       if (!this.ctx) return;
@@ -284,7 +298,7 @@
 
     pausar() {
       this.tocaMusica = false;
-      if (this.ganhoMusica) {
+      if (this.ganhoMusica && this.ctx) {
         this.ganhoMusica.gain.cancelScheduledValues(this.ctx.currentTime);
         this.ganhoMusica.gain.setTargetAtTime(0, this.ctx.currentTime, 0.35);
       }
@@ -321,7 +335,7 @@
       if (passo % 8 === 0) {
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
-        osc.type = "seno";
+        osc.type = "sine";
         const base = freq(faixa.raiz + (passo % 16 === 0 ? 0 : 5));
         osc.frequency.value = base;
         g.gain.setValueAtTime(0.0001, t);
@@ -338,7 +352,7 @@
         acorde.forEach((f) => {
           const osc = ctx.createOscillator();
           const g = ctx.createGain();
-          osc.type = "triangulo";
+          osc.type = "triangle";
           osc.frequency.value = f;
           g.gain.setValueAtTime(0.0001, t);
           g.gain.exponentialRampToValueAtTime(0.075, t + 0.9);
@@ -352,10 +366,9 @@
       // arpejo
       const padraoArpejo = [0, 2, 4, 6, 4, 2, 5, 3];
       if (passo % 2 === 1 || Math.random() < 0.25) {
-        const tipoOsc = faixa.arpejo === "quadrada" ? "square" : faixa.arpejo === "triangulo" ? "triangle" : "sine";
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
-        osc.type = tipoOsc;
+        osc.type = TIPOS_OSC[faixa.arpejo] || "sine";
         osc.frequency.value = grau(padraoArpejo[Math.floor(passo / 2) % padraoArpejo.length] + (Math.random() < 0.2 ? 7 : 0));
         const vol = 0.075 * faixa.brilho;
         g.gain.setValueAtTime(0.0001, t);
@@ -400,18 +413,24 @@
   const localSet = new Set();
   Object.values(acervo).forEach((lista) => lista.forEach((p) => localSet.add(p)));
 
+  const baseURL = document.baseURI || window.location.href;
+
   const imagens = {
+    /* Devolve SEMPRE uma URL absoluta: o Chromium resolve url() de custom
+       properties em relação à FOLHA DE ESTILO, o que transformava
+       "imagens/..." em "css/imagens/..." e gerava 404 no fundo do céu. */
     url(rel) {
-      return localSet.has(rel) ? rel : repo + rel;
+      if (!rel) return "";
+      if (/^(https?:)?\/\//i.test(rel)) return rel;
+      return localSet.has(rel) ? new URL(rel, baseURL).href : repo + rel;
     },
     lista(cat) {
-      const l = acervo[cat] || [];
-      return l.slice();
+      return (acervo[cat] || []).slice();
     },
     todas() {
       const saida = [];
       (FGA.categorias || []).forEach((c) => {
-        (acervo[c.id] || []).forEach((p) => saida.push({ src: p, categoria: c.id, rotulo: c.rotulo, icone: c.icone }));
+        (acervo[c.id] || []).forEach((p) => saida.push({ src: p, categoria: c.id, rotulo: c.rotulo }));
       });
       return saida;
     },
@@ -419,8 +438,7 @@
     sprite(cat, semente = 0) {
       const lista = imagens.lista(cat);
       if (!lista.length) return null;
-      const i = Math.abs(Math.floor(semente)) % lista.length;
-      return lista[i];
+      return lista[Math.abs(Math.floor(semente)) % lista.length];
     },
     nome(rel) {
       const arquivo = rel.split("/").pop().replace(/\.(png|jpe?g|webp)$/i, "");
@@ -497,7 +515,6 @@
       if (!lista.length) return;
       const salvo = armazem.ler("ceu", null);
       const inicial = salvo === null ? inteiro(0, lista.length - 1) : salvo;
-      // pré-carrega a imagem escolhida antes de aplicar
       const teste = new Image();
       teste.src = imagens.url(lista[((inicial % lista.length) + lista.length) % lista.length]);
       this.aplicar(inicial, false);
@@ -516,17 +533,6 @@
     let rodando = true;
     let ultimo = performance.now();
 
-    function medir() {
-      dpr = limitar(window.devicePixelRatio || 1, 1, 2);
-      largura = window.innerWidth;
-      altura = window.innerHeight;
-      canvas.width = Math.floor(largura * dpr);
-      canvas.height = Math.floor(altura * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const alvo = limitar(Math.round((largura * altura) / 46000), 10, 46);
-      bolhas = Array.from({ length: alvo }, () => criarBolha(true));
-    }
-
     function criarBolha(espalhar) {
       const raio = aleatorio(6, 30);
       return {
@@ -540,6 +546,17 @@
       };
     }
 
+    function medir() {
+      dpr = limitar(window.devicePixelRatio || 1, 1, 2);
+      largura = window.innerWidth;
+      altura = window.innerHeight;
+      canvas.width = Math.floor(largura * dpr);
+      canvas.height = Math.floor(altura * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const alvo = limitar(Math.round((largura * altura) / 46000), 10, 46);
+      bolhas = Array.from({ length: alvo }, () => criarBolha(true));
+    }
+
     function desenhar(t) {
       const dt = Math.min(48, t - ultimo) / 16.6667;
       ultimo = t;
@@ -549,14 +566,7 @@
         b.fase += 0.014 * dt * b.balanco;
         const x = b.x + Math.sin(b.fase) * 16;
         if (b.y + b.raio < -10) Object.assign(b, criarBolha(false));
-        const g = ctx.createRadialGradient(
-          x - b.raio * 0.35,
-          b.y - b.raio * 0.4,
-          b.raio * 0.1,
-          x,
-          b.y,
-          b.raio
-        );
+        const g = ctx.createRadialGradient(x - b.raio * 0.35, b.y - b.raio * 0.4, b.raio * 0.1, x, b.y, b.raio);
         g.addColorStop(0, `rgba(255,255,255,${b.alfa})`);
         g.addColorStop(0.45, `rgba(200,240,255,${b.alfa * 0.5})`);
         g.addColorStop(0.82, `rgba(140,210,255,${b.alfa * 0.32})`);
@@ -602,8 +612,12 @@
       areaToasts = criar("div", { classe: "toasts", role: "status", "aria-live": "polite" });
       document.body.append(areaToasts);
     }
+    const chaveIcone = tipo === "bom" ? "sucesso" : tipo === "aviso" ? "aviso" : "info";
+    const linhaTitulo = criar("div", { classe: "toast__titulo" });
+    if (FGA.icones) linhaTitulo.append(FGA.icones.el(chaveIcone, { classe: "ico--chip" }));
+    linhaTitulo.append(criar("strong", { texto: titulo }));
     const el = criar("div", { classe: "toast" + (tipo ? " toast--" + tipo : "") }, [
-      criar("strong", { texto: titulo }),
+      linhaTitulo,
       criar("span", { texto: texto || "" }),
     ]);
     areaToasts.append(el);
@@ -612,7 +626,7 @@
       el.style.opacity = "0";
       el.style.transform = "translateX(24px)";
       setTimeout(() => el.remove(), 420);
-    }, 3600);
+    }, 3800);
     return el;
   }
   FGA.toast = toast;
@@ -655,8 +669,7 @@
   let observadorRevelacoes = null;
 
   /* Revela os elementos .surgir conforme entram na tela.
-     Pode (e deve) ser chamada de novo depois de inserir conteúdo dinâmico:
-     só os elementos ainda não processados entram na fila. */
+     Pode (e deve) ser chamada de novo depois de inserir conteúdo dinâmico. */
   function prepararRevelacoes(raiz = document) {
     const alvos = $$(".surgir", raiz).filter((el) => !el.dataset.revelado);
     if (!alvos.length) return;
@@ -767,6 +780,13 @@
   function criarJanela({ id, titulo, icone, corpo }) {
     const existente = document.getElementById(id);
     if (existente) return existente;
+
+    const iconeEl = icone
+      ? String(icone).includes("/")
+        ? criar("img", { classe: "janela__icone", src: icone, alt: "", "aria-hidden": "true" })
+        : FGA.icones.el(icone, { classe: "janela__icone-ico" })
+      : null;
+
     const janela = criar("section", {
       id,
       classe: "janela janela--flutuante",
@@ -774,7 +794,7 @@
       "aria-label": titulo,
     });
     const barra = criar("header", { classe: "janela__barra" }, [
-      icone ? criar("img", { classe: "janela__icone", src: icone, alt: "", "aria-hidden": "true" }) : null,
+      iconeEl,
       criar("h2", { classe: "janela__titulo", texto: titulo }),
       criar("div", { classe: "janela__botoes" }, [
         criar("button", {
@@ -793,7 +813,7 @@
           type: "button",
           title: "Fechar",
           "aria-label": "Fechar janela",
-          texto: "✕",
+          texto: "×",
           onclick: () => {
             janela.remove();
             document.dispatchEvent(new CustomEvent("fga:fecharJanela", { detail: { id } }));
@@ -811,12 +831,301 @@
   }
   FGA.criarJanela = criarJanela;
 
-  /* ---------- 10. Player de música ---------- */
-  function montarPlayer(alvo) {
-    if (!alvo) return null;
-    const jaTem = $(".player", alvo);
-    if (jaTem) return jaTem;
-    const player = criar("div", { classe: "player" });
+  /* ---------- 10. Música: trilha do YouTube + trilha sintetizada ---------- */
+  let promessaYT = null;
+
+  function carregarAPIYouTube() {
+    if (promessaYT) return promessaYT;
+    promessaYT = new Promise((resolver, rejeitar) => {
+      if (window.YT && window.YT.Player) return resolver(window.YT);
+      if (!document.getElementById("yt-iframe-api")) {
+        const s = document.createElement("script");
+        s.id = "yt-iframe-api";
+        s.src = "https://www.youtube.com/iframe_api";
+        s.async = true;
+        s.onerror = () => rejeitar(new Error("api-bloqueada"));
+        document.head.append(s);
+      }
+      const inicio = Date.now();
+      const relogio = setInterval(() => {
+        if (window.YT && window.YT.Player) {
+          clearInterval(relogio);
+          resolver(window.YT);
+        } else if (Date.now() - inicio > 10000) {
+          clearInterval(relogio);
+          rejeitar(new Error("tempo-esgotado"));
+        }
+      }, 220);
+    });
+    return promessaYT;
+  }
+
+  let contadorYt = 0;
+  const musicaYT = {
+    player: null,
+    /* cada player do site (seção da página e janela do dock) tem seu próprio
+       alvo com id único — antes os dois dividiam o mesmo id e só o primeiro
+       funcionava. */
+    alvos: [],
+    alvoEmUsoId: null,
+    /* o YouTube troca o alvo por um <iframe> com o MESMO id, então a
+       existência do id (e não do nó antigo) é o que importa aqui */
+    temAlvo() {
+      return this.alvos.some((a) => !!document.getElementById(a.el.id));
+    },
+    alvoAtivo() {
+      const vivos = this.alvos.filter((a) => document.getElementById(a.el.id));
+      if (!vivos.length) return null;
+      const naJanela = vivos.find((a) => {
+        const no = document.getElementById(a.el.id);
+        return no && no.closest(".janela--flutuante");
+      });
+      return naJanela || vivos[0];
+    },
+    estado: "parado", // parado | carregando | tocando | pausado | erro
+    erroDetalhe: "",
+    aoMudar: null,
+    _relogio: null,
+
+    get dados() {
+      return FGA.musica || {};
+    },
+
+    /* Monta de novo o encaixe dentro do alvo (o YouTube troca esse nó por
+       um <iframe>; se o embed foi destruído, precisamos de um lugar novo). */
+    garantirMontagem(alvo) {
+      if (!alvo || !alvo.el) return null;
+      const iframe = alvo.el.querySelector("iframe");
+      if (iframe) return null;
+      let casa = alvo.el.querySelector(".yt__montagem");
+      if (!casa) {
+        casa = criar("div", { classe: "yt__montagem" });
+        alvo.el.append(casa);
+      }
+      return casa;
+    },
+
+    async tocar(alvoPedido) {
+      const dados = this.dados;
+      if (!dados.videoId) return;
+      audio.pausar(); // nunca as duas trilhas ao mesmo tempo
+
+      const alvo = alvoPedido || this.alvoAtivo();
+      if (!alvo) {
+        this.falhar("O player não está aberto nesta página.");
+        return;
+      }
+
+      // já existe um player rodando neste mesmo alvo: só retoma
+      if (this.player && this.alvoEmUsoId === alvo.el.id) {
+        try {
+          this.player.playVideo();
+          this.estado = "tocando";
+          this.avisar();
+          return;
+        } catch (e) {
+          this.player = null;
+        }
+      }
+
+      // estava tocando em outro player da página: desmonta o antigo
+      if (this.player) {
+        try {
+          if (this.player.destroy) this.player.destroy();
+        } catch (e) {}
+        const anterior = this.alvos.find((a) => a.el.id === this.alvoEmUsoId);
+        if (anterior) {
+          const velho = anterior.el.querySelector("iframe");
+          if (velho) velho.remove();
+          this.garantirMontagem(anterior);
+        }
+        this.player = null;
+      }
+
+      const casa = this.garantirMontagem(alvo);
+      if (!casa) return;
+
+      this.estado = "carregando";
+      this.avisar();
+      try {
+        const YT = await carregarAPIYouTube();
+        this.alvoEmUsoId = alvo.el.id;
+        this.player = new YT.Player(casa, {
+          width: "100%",
+          height: "100%",
+          videoId: dados.videoId,
+          playerVars: {
+            autoplay: 1,
+            controls: 1,
+            rel: 0,
+            modestbranding: 1,
+            playsinline: 1,
+            origin: window.location.origin,
+          },
+          events: {
+            onReady: (e) => {
+              e.target.setVolume(Math.round(audio.volume * 100));
+              e.target.playVideo();
+              this.estado = "tocando";
+              this.avisar();
+            },
+            onStateChange: (e) => {
+              const estadoYT = (window.YT && window.YT.PlayerState) || {};
+              if (e.data === estadoYT.PLAYING) {
+                this.estado = "tocando";
+                audio.pausar();
+              } else if (e.data === estadoYT.PAUSED) this.estado = "pausado";
+              else if (e.data === estadoYT.ENDED) this.estado = "parado";
+              this.avisar();
+            },
+            onError: () =>
+              this.falhar("O YouTube recusou a reprodução nesta página (embed bloqueado)."),
+          },
+        });
+        clearTimeout(this._relogio);
+        this._relogio = setTimeout(() => {
+          if (this.estado !== "tocando") {
+            this.falhar(
+              "O player do YouTube não iniciou nesta janela — provavelmente o sandbox do preview bloqueou o embed."
+            );
+          }
+        }, 9000);
+      } catch (e) {
+        this.falhar(
+          e.message === "api-bloqueada"
+            ? "Não foi possível carregar a API do YouTube (sem conexão?)."
+            : "O YouTube demorou demais para responder."
+        );
+      }
+    },
+
+    pausar() {
+      if (this.player && this.player.pauseVideo) {
+        try {
+          this.player.pauseVideo();
+        } catch (e) {}
+      }
+      if (this.estado !== "erro") this.estado = "pausado";
+      this.avisar();
+    },
+
+    alternar() {
+      if (this.estado === "tocando") this.pausar();
+      else this.tocar();
+    },
+
+    volume(v) {
+      if (this.player && this.player.setVolume) {
+        try {
+          this.player.setVolume(Math.round(v * 100));
+        } catch (e) {}
+      }
+    },
+
+    falhar(detalhe) {
+      this.estado = "erro";
+      this.erroDetalhe = detalhe || "";
+      this.avisar();
+      FGA.toast(
+        "Trilha do YouTube indisponível",
+        detalhe + " Use a aba “Sintetizado” ou abra o vídeo direto no YouTube.",
+        "aviso"
+      );
+    },
+
+    avisar() {
+      if (typeof this.aoMudar === "function") this.aoMudar();
+    },
+  };
+  FGA.musicaYT = musicaYT;
+
+  function blocoYouTube() {
+    const dados = FGA.musica || {};
+    const caixa = criar("div", { classe: "yt" });
+
+    const palco = criar("div", { classe: "yt__palco" });
+    const alvo = criar("div", { classe: "yt__alvo", id: "ytAlvo" + ++contadorYt });
+    alvo.append(criar("div", { classe: "yt__montagem" }));
+    const registro = { el: alvo };
+    musicaYT.alvos.push(registro);
+    const fachada = criar("button", {
+      classe: "yt__fachada",
+      type: "button",
+      "aria-label": "Tocar a trilha oficial no YouTube: " + (dados.titulo || ""),
+    });
+    const capa = document.createElement("img");
+    capa.className = "yt__capa";
+    /* o sandbox do preview (e qualquer rede restrita) bloqueia o i.ytimg.com;
+       nesse caso cai para uma imagem local do acervo */
+    capa.src = dados.posterLocal || dados.thumb || "";
+    if (dados.thumb && dados.posterLocal) {
+      capa.addEventListener("error", () => {
+        capa.src = dados.posterLocal;
+      });
+      const teste = new Image();
+      teste.onload = () => {
+        capa.src = dados.thumb;
+      };
+      teste.src = dados.thumb;
+    }
+    capa.alt = "";
+    capa.loading = "lazy";
+    const play = criar("span", { classe: "yt__play", "aria-hidden": "true" });
+    play.append(FGA.icones.el("som", { classe: "ico--dock" }));
+    const selo = criar("span", { classe: "yt__selo", texto: "trilha oficial · YouTube" });
+    fachada.append(capa, selo, play);
+    palco.append(alvo, fachada);
+
+    const titulo = criar("p", { classe: "yt__titulo", html: `<strong>${dados.titulo || ""}</strong>` });
+    const meta = criar("p", {
+      classe: "yt__meta",
+      html: `canal <a href="${dados.canal || "#"}" target="_blank" rel="noopener">${dados.autor || ""}</a> · <a href="${dados.url || "#"}" target="_blank" rel="noopener">assistir no YouTube</a>`,
+    });
+
+    const controles = criar("div", { classe: "player__controles" });
+    const botaoTocar = criar("button", { classe: "botao botao--pequeno botao--verde", type: "button" });
+    const botaoPausar = criar("button", {
+      classe: "botao botao--pequeno botao--fantasma",
+      type: "button",
+      texto: "Pausar",
+    });
+    controles.append(botaoTocar, botaoPausar);
+
+    const aviso = criar("p", { classe: "yt__aviso" });
+    caixa.append(palco, titulo, meta, controles, aviso);
+
+    fachada.addEventListener("click", () => {
+      audio.desbloquear();
+      musicaYT.tocar(registro);
+    });
+    botaoTocar.addEventListener("click", () => {
+      audio.desbloquear();
+      musicaYT.tocar(registro);
+    });
+    botaoPausar.addEventListener("click", () => musicaYT.pausar());
+
+    caixa.atualizar = () => {
+      const estado = musicaYT.estado;
+      const tocando = estado === "tocando";
+      botaoTocar.textContent =
+        estado === "carregando" ? "carregando…" : tocando ? "Reiniciar" : "Tocar trilha oficial";
+      botaoTocar.setAttribute("aria-pressed", String(tocando));
+      /* só o player que está tocando esconde a fachada (senão a capa ficaria
+         por cima do vídeo do outro player) */
+      fachada.style.display = tocando && musicaYT.alvoEmUsoId === alvo.id ? "none" : "";
+      aviso.innerHTML =
+        estado === "erro"
+          ? `<strong>Não deu para tocar aqui:</strong> ${musicaYT.erroDetalhe} <a href="${dados.url}" target="_blank" rel="noopener">Abrir no YouTube →</a>`
+          : estado === "carregando"
+            ? "carregando o player do YouTube…"
+            : "";
+    };
+    caixa.atualizar();
+    return caixa;
+  }
+
+  function blocoSintetizado() {
+    const caixa = criar("div", { classe: "synth" });
     const tela = criar("div", { classe: "player__tela", role: "status", "aria-live": "off" });
     const onda = criar("span", { classe: "player__onda", "aria-hidden": "true" }, [
       criar("i"),
@@ -825,22 +1134,79 @@
       criar("i"),
       criar("i"),
     ]);
-    const texto = criar("span", { texto: "parado — clique em ▷" });
+    const texto = criar("span", { texto: "parado — clique em Tocar" });
     tela.append(onda, texto);
 
     const controles = criar("div", { classe: "player__controles" });
+    /* os botões do player usam ícones do Vista + rótulo em texto */
+    const rotular = (botao, chave, txt) => {
+      botao.textContent = "";
+      botao.append(FGA.icones.el(chave, { classe: "ico--botao" }), criar("span", { texto: txt }));
+    };
     const botaoTocar = criar("button", {
       classe: "botao botao--pequeno botao--ciano",
       type: "button",
-      texto: "▷ Tocar",
       "aria-pressed": "false",
     });
+    rotular(botaoTocar, "som", "Tocar");
     const botaoFaixa = criar("button", {
       classe: "botao botao--pequeno botao--fantasma",
       type: "button",
-      texto: "↻ Próxima faixa",
     });
+    rotular(botaoFaixa, "musica", "Próxima faixa");
     controles.append(botaoTocar, botaoFaixa);
+
+    const lista = criar("div", { classe: "player__faixas" });
+    audio.faixas.forEach((f, i) => {
+      const b = criar("button", { classe: "player__faixa", type: "button", "aria-pressed": "false" });
+      const icone = criar("span", { classe: "player__faixa-icone" });
+      icone.append(FGA.icones.el("musica", { classe: "ico--chip" }));
+      b.append(icone, criar("span", { html: `<strong>${f.nome}</strong><br><small>${f.descricao}</small>` }));
+      b.addEventListener("click", () => {
+        audio.tocar(i);
+        caixa.atualizar();
+      });
+      lista.append(b);
+    });
+
+    caixa.append(tela, controles, lista);
+    caixa.atualizar = () => {
+      const tocando = audio.tocaMusica;
+      rotular(botaoTocar, "som", tocando ? "Pausar" : "Tocar");
+      botaoTocar.setAttribute("aria-pressed", String(tocando));
+      tela.classList.toggle("player__tela--tocando", tocando);
+      texto.textContent = tocando ? `${audio.faixa.nome} — ${audio.faixa.descricao}` : "parado — clique em Tocar";
+      $$(".player__faixa", lista).forEach((b, i) => {
+        b.setAttribute("aria-pressed", String(tocando && i === audio.faixaAtual));
+      });
+    };
+    botaoTocar.addEventListener("click", () => {
+      audio.alternar();
+      caixa.atualizar();
+    });
+    botaoFaixa.addEventListener("click", () => {
+      audio.tocar(audio.faixaAtual + 1);
+      caixa.atualizar();
+    });
+    caixa.atualizar();
+    return caixa;
+  }
+
+  function montarPlayer(alvo) {
+    if (!alvo) return null;
+    const jaTem = $(".player", alvo);
+    if (jaTem) return jaTem;
+
+    const player = criar("div", { classe: "player" });
+    const abas = criar("div", { classe: "abas", role: "tablist", "aria-label": "Escolha a trilha sonora" });
+    const corpoYT = blocoYouTube();
+    const corpoSynth = blocoSintetizado();
+
+    const abaYT = criar("button", { classe: "aba", type: "button", role: "tab", "aria-selected": "true" });
+    abaYT.append(FGA.icones.el("som", { classe: "ico--chip" }), criar("span", { texto: "Trilha oficial (YouTube)" }));
+    const abaSynth = criar("button", { classe: "aba", type: "button", role: "tab", "aria-selected": "false" });
+    abaSynth.append(FGA.icones.el("musica", { classe: "ico--chip" }), criar("span", { texto: "Sintetizado" }));
+    abas.append(abaYT, abaSynth);
 
     const volume = criar("label", { classe: "player__volume" });
     const entrada = criar("input", {
@@ -850,58 +1216,71 @@
       value: String(Math.round((armazem.ler("volume", 0.6) || 0.6) * 100)),
       "aria-label": "Volume",
     });
-    volume.append(criar("span", { texto: "🔊" }), entrada);
+    volume.append(FGA.icones.el("som", { classe: "ico--chip" }), entrada);
 
-    const lista = criar("div", { classe: "player__faixas" });
-    audio.faixas.forEach((f, i) => {
-      const b = criar("button", {
-        classe: "player__faixa",
-        type: "button",
-        "aria-pressed": "false",
-        html: `<span>🎼</span><span><strong>${f.nome}</strong><br><small>${f.descricao}</small></span>`,
-      });
-      b.addEventListener("click", () => {
-        audio.tocar(i);
-        atualizar();
-      });
-      lista.append(b);
-    });
+    const painel = criar("div", { classe: "player__painel" }, [corpoYT, corpoSynth]);
+    corpoSynth.hidden = true;
 
-    player.append(tela, controles, lista, volume);
-
-    function atualizar() {
-      const tocando = audio.tocaMusica;
-      botaoTocar.textContent = tocando ? "❚❚ Pausar" : "▷ Tocar";
-      botaoTocar.setAttribute("aria-pressed", String(tocando));
-      tela.classList.toggle("player__tela--tocando", tocando);
-      texto.textContent = tocando ? `${audio.faixa.nome} — ${audio.faixa.descricao}` : "parado — clique em ▷";
-      $$(".player__faixa", lista).forEach((b, i) => {
-        b.setAttribute("aria-pressed", String(tocando && i === audio.faixaAtual));
-      });
+    function selecionar(qual) {
+      const yt = qual === "yt";
+      abaYT.setAttribute("aria-selected", String(yt));
+      abaSynth.setAttribute("aria-selected", String(!yt));
+      corpoYT.hidden = !yt;
+      corpoSynth.hidden = yt;
+      if (yt) audio.pausar();
+      else musicaYT.pausar();
+      (yt ? corpoYT : corpoSynth).atualizar();
     }
+    abaYT.addEventListener("click", () => selecionar("yt"));
+    abaSynth.addEventListener("click", () => selecionar("synth"));
 
-    botaoTocar.addEventListener("click", () => {
-      audio.alternar();
-      atualizar();
+    entrada.addEventListener("input", () => {
+      audio.definirVolume(Number(entrada.value) / 100);
+      musicaYT.volume(audio.volume);
     });
-    botaoFaixa.addEventListener("click", () => {
-      audio.tocar(audio.faixaAtual + 1);
-      atualizar();
-    });
-    entrada.addEventListener("input", () => audio.definirVolume(Number(entrada.value) / 100));
 
-    audio.aoMudar = atualizar;
-    atualizar();
+    player.append(abas, painel, volume);
+
+    const atualizarTudo = () => {
+      corpoYT.atualizar();
+      corpoSynth.atualizar();
+    };
+    audio.aoMudar = atualizarTudo;
+    musicaYT.aoMudar = atualizarTudo;
+    atualizarTudo();
+
     alvo.append(player);
     return player;
   }
   FGA.montarPlayer = montarPlayer;
 
+  /* ---------- 10.1 Controle unificado da trilha sonora ---------- */
+  function trilhaAtual() {
+    if (musicaYT.estado === "tocando") return "youtube";
+    if (audio.tocaMusica) return "sintetizada";
+    return null;
+  }
+
+  function alternarTrilha() {
+    const atual = trilhaAtual();
+    if (atual === "youtube") musicaYT.pausar();
+    else if (atual === "sintetizada") audio.pausar();
+    else if (FGA.musica && FGA.musica.videoId && (musicaYT.temAlvo() || musicaYT.player)) {
+      audio.desbloquear();
+      musicaYT.tocar();
+    } else {
+      audio.tocar(audio.faixaAtual);
+    }
+    return trilhaAtual();
+  }
+  FGA.alternarTrilha = alternarTrilha;
+  FGA.trilhaAtual = trilhaAtual;
+
   /* ---------- 11. AeroBot (chat estilo MSN) ---------- */
   function respostaDoBot(pergunta) {
     const bot = FGA.bot || { regras: [], padroes: [] };
     const texto = normalizar(pergunta);
-    if (!texto) return "digita algo aí! 😄";
+    if (!texto) return "digita algo aí!";
     let melhor = null;
     let melhorPontos = 0;
     bot.regras.forEach((regra) => {
@@ -924,13 +1303,23 @@
         .replace("%LOCAL%", String(FGA.totalLocal || 171))
         .replace("%CURIOSIDADE%", cur.texto);
     }
-    return escolher(bot.padroes || ["hmm, não sei essa 🤔"]);
+    return escolher(bot.padroes || ["hmm, não sei essa."]);
   }
 
   function montarChat(alvo) {
     if (!alvo) return null;
     const bot = FGA.bot || { nome: "AeroBot", status: "", saudacao: "oi!" };
     const janela = criar("div", { classe: "chat" });
+
+    const cabecalho = criar("div", { classe: "chat__topo" });
+    cabecalho.append(
+      FGA.icones.el("chat", { classe: "ico--g" }),
+      criar("div", {}, [
+        criar("strong", { texto: bot.nome }),
+        criar("small", { texto: bot.status || "" }),
+      ])
+    );
+
     const historico = criar("div", {
       classe: "chat__historico",
       role: "log",
@@ -959,7 +1348,7 @@
       sugestoes.append(b);
     });
 
-    janela.append(historico, sugestoes, formulario);
+    janela.append(cabecalho, historico, sugestoes, formulario);
 
     function balao(texto, quem) {
       const b = criar("div", { classe: "balao balao--" + quem }, [
@@ -978,20 +1367,20 @@
       e.preventDefault();
       const txt = campo.value.trim();
       if (!txt || pensando) return;
-      balao(txt.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c])), "usuario");
+      balao(
+        txt.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c])),
+        "usuario"
+      );
       campo.value = "";
       pensando = true;
       audio.sfx("mensagem");
       const digitando = balao("<em>está digitando…</em>", "bot");
-      setTimeout(
-        () => {
-          digitando.remove();
-          balao(respostaDoBot(txt), "bot");
-          audio.sfx("clique");
-          pensando = false;
-        },
-        520 + Math.random() * 520
-      );
+      setTimeout(() => {
+        digitando.remove();
+        balao(respostaDoBot(txt), "bot");
+        audio.sfx("clique");
+        pensando = false;
+      }, 520 + Math.random() * 520);
     });
 
     alvo.append(janela);
@@ -1009,39 +1398,42 @@
     const acoes = [
       {
         id: "musica",
-        icone: "🎵",
+        icone: "som",
         rotulo: "Música Aero",
         aoClicar: () => {
           const janela = criarJanela({
             id: "janelaMusica",
             titulo: "Aero Player 2000",
-            icone: (imagens.sprite("objects", 3) && imagens.url(imagens.sprite("objects", 3))) || null,
+            icone: "som",
             corpo: criar("div", { classe: "player-area" }),
           });
           janela.classList.remove("minimizada");
           montarPlayer($(".player-area", janela));
           audio.desbloquear();
-          if (!audio.tocaMusica) {
-            audio.tocar(audio.faixaAtual);
-            FGA.toast("Música ligada", "Trilha sintetizada em tempo real (Web Audio)", "bom");
+          if (!trilhaAtual()) {
+            if (FGA.musica && FGA.musica.videoId && musicaYT.temAlvo()) musicaYT.tocar();
+            else {
+              audio.tocar(audio.faixaAtual);
+              FGA.toast("Música ligada", "Trilha sintetizada em tempo real (Web Audio)", "bom");
+            }
           }
         },
       },
       {
         id: "curiosidade",
-        icone: "💡",
+        icone: "curiosidades",
         rotulo: "Curiosidade",
         aoClicar: () => mostrarCuriosidade(),
       },
       {
         id: "ceu",
-        icone: "🎨",
+        icone: "cenario",
         rotulo: "Trocar cenário",
         aoClicar: () => cenario.trocar(1 + inteiro(0, 2)),
       },
       {
         id: "retro",
-        icone: "🕹️",
+        icone: "retro",
         rotulo: "Modo 2000",
         alternavel: () => document.body.classList.contains("retro"),
         aoClicar: (botao) => {
@@ -1049,13 +1441,17 @@
           document.body.classList.toggle("retro", retro);
           armazem.gravar("retro", retro);
           botao.setAttribute("aria-pressed", String(retro));
-          FGA.toast(retro ? "Modo 2000 ativado" : "Modo Aero ativado", retro ? "janelas sólidas, como em 2002" : "vidro, brilho e desfoque de volta");
+          FGA.toast(
+            retro ? "Modo 2000 ativado" : "Modo Aero ativado",
+            retro ? "janelas sólidas, como em 2002" : "vidro, brilho e desfoque de volta",
+            retro ? "aviso" : "bom"
+          );
           audio.sfx(retro ? "aviso" : "vidro");
         },
       },
       {
         id: "calmo",
-        icone: "🍃",
+        icone: "calmo",
         rotulo: "Efeitos calmos",
         alternavel: () => document.body.classList.contains("calmo"),
         aoClicar: (botao) => {
@@ -1068,7 +1464,7 @@
       },
       {
         id: "topo",
-        icone: "⬆️",
+        icone: "topo",
         rotulo: "Voltar ao topo",
         aoClicar: () => window.scrollTo({ top: 0, behavior: "smooth" }),
       },
@@ -1080,7 +1476,8 @@
         type: "button",
         "aria-label": a.rotulo,
         title: a.rotulo,
-      }, [criar("span", { texto: a.icone, "aria-hidden": "true" }), criar("span", { classe: "dock__rotulo", texto: a.rotulo })]);
+      });
+      b.append(FGA.icones.el(a.icone, { classe: "ico--dock" }), criar("span", { classe: "dock__rotulo", texto: a.rotulo }));
       if (a.alternavel) b.setAttribute("aria-pressed", String(a.alternavel()));
       b.addEventListener("click", () => {
         audio.desbloquear();
@@ -1107,19 +1504,16 @@
     const item = dado || escolher(lista);
     if (!item) return;
     const corpo = criar("div", {}, [
-      criar("p", { html: `<strong>${item.icone} ${item.titulo}</strong>` }),
-      criar("p", { texto: item.texto }),
-      criar("p", {
-        classe: "dica-uso",
-        texto: "Clique no título da janela para arrastar · ✕ fecha · – minimiza",
-      }),
+      criar("p", { classe: "curiosidade__topo", html: `<strong>${item.titulo}</strong>` }),
+      criar("p", { html: item.texto }),
+      criar("p", { classe: "dica-uso", texto: "Clique no título da janela para arrastar; o botão da direita fecha e o da esquerda minimiza." }),
     ]);
     const existente = document.getElementById("janelaCuriosidade");
     if (existente) existente.remove();
     const janela = criarJanela({
       id: "janelaCuriosidade",
       titulo: "Curiosidade da hora",
-      icone: (imagens.sprite("miscellaneous", item.titulo.length) && imagens.url(imagens.sprite("miscellaneous", item.titulo.length))) || null,
+      icone: "curiosidades",
       corpo,
     });
     janela.classList.remove("minimizada");
@@ -1134,8 +1528,12 @@
       const digitando = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
       if (digitando) return;
       if (e.key === "m") {
-        audio.alternar();
-        FGA.toast(audio.tocaMusica ? "Música ligada" : "Música pausada", "atalho: M", "bom");
+        const atual = alternarTrilha();
+        FGA.toast(
+          atual ? "Trilha ligada" : "Trilha pausada",
+          atual === "youtube" ? "trilha oficial (YouTube)" : atual === "sintetizada" ? "trilha sintetizada" : "atalho: M",
+          "bom"
+        );
       } else if (e.key === "c") {
         cenario.trocar(1);
       } else if (e.key === "k") {
@@ -1171,30 +1569,46 @@
     document.addEventListener("keydown", destravar);
 
     cenario.iniciar();
-    montarNavegacao();
 
-    // botão de som do cabeçalho
+    // botão de som do cabeçalho (ícone de mídia do Vista)
     const botaoSom = document.getElementById("botaoSom");
     if (botaoSom) {
+      botaoSom.innerHTML = "";
+      botaoSom.append(FGA.icones.el("som", { classe: "ico--botao" }));
       const sincronizar = () => {
-        const ligado = audio.tocaMusica;
-        botaoSom.textContent = ligado ? "🔊" : "🎵";
-        botaoSom.setAttribute("aria-pressed", String(ligado));
-        botaoSom.title = ligado ? "Pausar a música (atalho: M)" : "Tocar a música Aero (atalho: M)";
+        const atual = trilhaAtual();
+        botaoSom.setAttribute("aria-pressed", String(!!atual));
+        botaoSom.title = atual ? "Pausar a trilha (atalho: M)" : "Tocar a trilha do site (atalho: M)";
       };
       botaoSom.addEventListener("click", () => {
-        audio.desbloquear();
-        audio.alternar();
+        const atual = alternarTrilha();
         sincronizar();
-        FGA.toast(audio.tocaMusica ? "Música ligada" : "Música pausada", audio.tocaMusica ? audio.faixa.nome : "atalho: M", "bom");
+        FGA.toast(
+          atual ? "Trilha ligada" : "Trilha pausada",
+          atual === "youtube"
+            ? FGA.musica
+              ? FGA.musica.titulo
+              : "trilha oficial"
+            : atual === "sintetizada"
+              ? "trilha sintetizada"
+              : "atalho: M",
+          "bom"
+        );
       });
-      const antigo = audio.aoMudar;
+      const aoMudarAntes = audio.aoMudar;
       audio.aoMudar = () => {
-        if (typeof antigo === "function") antigo();
+        if (typeof aoMudarAntes === "function") aoMudarAntes();
+        sincronizar();
+      };
+      const aoMudarYTAntes = musicaYT.aoMudar;
+      musicaYT.aoMudar = () => {
+        if (typeof aoMudarYTAntes === "function") aoMudarYTAntes();
         sincronizar();
       };
       sincronizar();
     }
+
+    montarNavegacao();
     prepararRevelacoes();
     animarContadores();
     montarDock();
@@ -1207,5 +1621,5 @@
     return true;
   };
 
-  FGA.versao = "1.0.0";
+  FGA.versao = "1.1.0";
 })();

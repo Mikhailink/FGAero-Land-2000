@@ -11,7 +11,7 @@ FGA.categorias = [
   {
     "id": "skyboxes",
     "rotulo": "Céus",
-    "icone": "☁️",
+    "amostra": "imagens/skyboxes/skyboxes_11.png",
     "descricao": "Panoramas de céu azul com nuvens — a base de todo wallpaper Aero.",
     "local": 10,
     "total": 64
@@ -19,7 +19,7 @@ FGA.categorias = [
   {
     "id": "foregrounds",
     "rotulo": "Primeiros planos",
-    "icone": "🌿",
+    "amostra": "imagens/foregrounds/foregrounds_7.png",
     "descricao": "Grama, folhagem e detalhes que ficam na frente da cena.",
     "local": 7,
     "total": 141
@@ -27,7 +27,7 @@ FGA.categorias = [
   {
     "id": "water",
     "rotulo": "Água",
-    "icone": "💧",
+    "amostra": "imagens/water/water_7.png",
     "descricao": "Respingos, ondas e gotas: o elemento vital do Frutiger Aero.",
     "local": 7,
     "total": 69
@@ -35,7 +35,7 @@ FGA.categorias = [
   {
     "id": "buildings",
     "rotulo": "Construções",
-    "icone": "🏢",
+    "amostra": "imagens/buildings/buildings_3.png",
     "descricao": "Arquitetura moderna, torres de vidro e cidades do futuro brilhante.",
     "local": 8,
     "total": 155
@@ -43,7 +43,7 @@ FGA.categorias = [
   {
     "id": "metro",
     "rotulo": "Metrô e mobilidade",
-    "icone": "🚇",
+    "amostra": "imagens/metro/metro_16.png",
     "descricao": "Frutiger Metro: grafismos, transporte e o visual urbano pós-2004.",
     "local": 6,
     "total": 79
@@ -51,7 +51,7 @@ FGA.categorias = [
   {
     "id": "clouds",
     "rotulo": "Nuvens",
-    "icone": "⛅",
+    "amostra": "imagens/clouds/clouds_1.png",
     "descricao": "Nuvens recortadas para compor cenários e transparências.",
     "local": 9,
     "total": 37
@@ -59,7 +59,7 @@ FGA.categorias = [
   {
     "id": "trees",
     "rotulo": "Árvores",
-    "icone": "🌳",
+    "amostra": "imagens/trees/trees_47.png",
     "descricao": "Vegetação recortada — a promessa verde do design ecológico.",
     "local": 9,
     "total": 103
@@ -67,7 +67,7 @@ FGA.categorias = [
   {
     "id": "balloons",
     "rotulo": "Balões",
-    "icone": "🎈",
+    "amostra": "imagens/balloons/balloons_2.png",
     "descricao": "Balões de ar quente: otimismo, liberdade e céu aberto.",
     "local": 11,
     "total": 25
@@ -75,7 +75,7 @@ FGA.categorias = [
   {
     "id": "bubbles",
     "rotulo": "Bolhas",
-    "icone": "🫧",
+    "amostra": "imagens/bubbles/bubbles_1.png",
     "descricao": "Bolhas de sabão, o ícone mais repetido da estética.",
     "local": 11,
     "total": 43
@@ -83,7 +83,7 @@ FGA.categorias = [
   {
     "id": "sealife",
     "rotulo": "Vida marinha",
-    "icone": "🐠",
+    "amostra": "imagens/sealife/sealife_4.png",
     "descricao": "Peixes tropicais — Natureza + Tecnologia em estado puro.",
     "local": 11,
     "total": 37
@@ -91,7 +91,7 @@ FGA.categorias = [
   {
     "id": "globes",
     "rotulo": "Globos",
-    "icone": "🌍",
+    "amostra": "imagens/globes/globes_2.png",
     "descricao": "O planeta como marca: globalização com acabamento em vidro.",
     "local": 9,
     "total": 34
@@ -99,7 +99,7 @@ FGA.categorias = [
   {
     "id": "airplanes",
     "rotulo": "Aviões",
-    "icone": "✈️",
+    "amostra": "imagens/airplanes/airplanes_2.png",
     "descricao": "Voar era o verbo da década.",
     "local": 9,
     "total": 27
@@ -107,7 +107,7 @@ FGA.categorias = [
   {
     "id": "animals",
     "rotulo": "Animais",
-    "icone": "🐾",
+    "amostra": "imagens/animals/animals_8.png",
     "descricao": "Bichos fofos e selvagens em recortes de alta resolução.",
     "local": 9,
     "total": 46
@@ -115,7 +115,7 @@ FGA.categorias = [
   {
     "id": "insects",
     "rotulo": "Insetos",
-    "icone": "🦋",
+    "amostra": "imagens/insects/insects_1.png",
     "descricao": "Libélulas, joaninhas e borboletas em close.",
     "local": 7,
     "total": 38
@@ -123,7 +123,7 @@ FGA.categorias = [
   {
     "id": "flares",
     "rotulo": "Lentes e brilhos",
-    "icone": "✨",
+    "amostra": "imagens/flares/flares_4.png",
     "descricao": "Lens flare, bokeh e auroras — a luz da época.",
     "local": 9,
     "total": 32
@@ -131,7 +131,7 @@ FGA.categorias = [
   {
     "id": "objects",
     "rotulo": "Objetos",
-    "icone": "📱",
+    "amostra": "imagens/objects/objects_35.png",
     "descricao": "Gadgets, celulares, MP3 e apetrechos do começo do milênio.",
     "local": 14,
     "total": 181
@@ -139,7 +139,7 @@ FGA.categorias = [
   {
     "id": "miscellaneous",
     "rotulo": "Diversos",
-    "icone": "🎁",
+    "amostra": "imagens/miscellaneous/miscellaneous_1.png",
     "descricao": "Tudo que não cabe em etiqueta: o caos organizado do acervo.",
     "local": 11,
     "total": 93
@@ -147,7 +147,7 @@ FGA.categorias = [
   {
     "id": "furniture",
     "rotulo": "Mobília",
-    "icone": "🛋️",
+    "amostra": "imagens/furniture/furniture_3.png",
     "descricao": "Interiores Aero: móveis de plástico brilhante e vidro.",
     "local": 7,
     "total": 23
@@ -155,7 +155,7 @@ FGA.categorias = [
   {
     "id": "people",
     "rotulo": "Pessoas",
-    "icone": "🧑‍🤝‍🧑",
+    "amostra": "imagens/people/people_13.png",
     "descricao": "Figuras humanas recortadas para composições e mockups.",
     "local": 7,
     "total": 57

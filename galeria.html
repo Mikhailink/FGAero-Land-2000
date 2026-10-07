@@ -64,17 +64,17 @@
             <span class="marca__lema">arquivo vivo do Frutiger Aero</span>
           </span>
         </a>
-        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu">☰</button>
+        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu"><span class="menu__barras" aria-hidden="true"></span></button>
         <nav class="menu" id="menuPrincipal" aria-label="Navegação principal">
-          <a class="menu__link" href="index.html">Início</a>
-          <a class="menu__link" href="historia.html">História</a>
-          <a class="menu__link" href="galeria.html">Galeria</a>
-          <a class="menu__link" href="jogos.html">Jogos</a>
-          <a class="menu__link" href="curiosidades.html">Curiosidades</a>
-          <a class="menu__link" href="creditos.html">Créditos</a>
+          <a class="menu__link" href="index.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_white.png" alt="" aria-hidden="true" decoding="async"><span>Início</span></a>
+          <a class="menu__link" href="historia.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_book_3.png" alt="" aria-hidden="true" decoding="async"><span>História</span></a>
+          <a class="menu__link" href="galeria.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_photo_gallery.png" alt="" aria-hidden="true" decoding="async"><span>Galeria</span></a>
+          <a class="menu__link" href="jogos.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async"><span>Jogos</span></a>
+          <a class="menu__link" href="curiosidades.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_info.png" alt="" aria-hidden="true" decoding="async"><span>Curiosidades</span></a>
+          <a class="menu__link" href="creditos.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_book_2.png" alt="" aria-hidden="true" decoding="async"><span>Créditos</span></a>
         </nav>
         <div class="topo__acoes">
-          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a música (atalho: M)" aria-label="Ligar ou pausar a música">🎵</button>
+          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a trilha (atalho: M)" aria-label="Ligar ou pausar a trilha sonora"><img class="ico ico--topo" src="imagens/winVista/png/vista_movie.png" alt="" aria-hidden="true" decoding="async"></button>
         </div>
       </div>
     </header>
@@ -93,7 +93,7 @@
             categoria, clique para ampliar e baixe o arquivo original.
           </p>
           <div class="empilhado espaco-topo">
-            <a class="botao botao--pequeno botao--verde" href="https://github.com/Mikhailink/FGAero-Land-2000" target="_blank" rel="noopener">⤓ Repositório com as 1.284 imagens</a>
+            <a class="botao botao--pequeno botao--verde" href="https://github.com/Mikhailink/FGAero-Land-2000" target="_blank" rel="noopener"><img class="ico ico--botao" src="imagens/winVista/png/vista_netcenter.png" alt="" aria-hidden="true" decoding="async"><span>Repositório com as 1.284 imagens</span></a>
             <a class="botao botao--pequeno" href="https://frutigeraeroarchive.org" target="_blank" rel="noopener">Frutiger Aero Archive</a>
           </div>
         </div>
@@ -112,7 +112,7 @@
             </div>
             <div class="empilhado">
               <button class="botao botao--pequeno botao--fantasma" id="botaoTamanho" type="button" aria-pressed="false">
-                🔍 Alternar tamanho das miniaturas
+                <img class="ico ico--botao" src="imagens/winVista/png/vista_search_globe.png" alt="" aria-hidden="true" decoding="async"><span>Alternar tamanho das miniaturas</span>
               </button>
             </div>
           </div>
@@ -204,12 +204,13 @@
         <div class="rodape__base">
           <span>© <span id="anoAtual">2026</span> FGAero Land 2000 · projeto editorial sem fins comerciais.</span>
           <span>Imagens do acervo Frutiger Aero Archive · créditos aos autores originais.</span>
-          <span>Feito com vidro, bolhas e saudade. 🫧</span>
+          <span>Feito com vidro, bolhas e saudade.</span>
         </div>
       </div>
     </footer>
     <div class="dock" id="dock" role="toolbar" aria-label="Ferramentas do site"></div>
     <script src="js/acervo.js"></script>
+    <script src="js/icones.js"></script>
     <script src="js/conteudo.js"></script>
     <script src="js/aero.js"></script>
     <script src="js/paginas.js"></script>

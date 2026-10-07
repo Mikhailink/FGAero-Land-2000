@@ -193,7 +193,7 @@ code {
 .cenario__ceu {
   position: absolute;
   inset: 0;
-  background-image: var(--ceu-imagem, none);
+  background-image: var(--ceu-imagem, none); /* o valor é aplicado pelo JS como URL absoluta */
   background-size: cover;
   background-position: center 30%;
   opacity: 0.9;
@@ -646,6 +646,94 @@ code {
     opacity: 1;
     transform: none;
   }
+}
+
+/* hambúrguer desenhado em CSS: três barras, sem glifos no texto */
+.menu__hamburguer .menu__barras,
+.menu__barras {
+  display: block;
+  width: 20px;
+  height: 14px;
+  background-image: linear-gradient(180deg, #0b3a68, #0b3a68),
+    linear-gradient(180deg, #0b3a68, #0b3a68),
+    linear-gradient(180deg, #0b3a68, #0b3a68);
+  background-size: 100% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 6px, 0 12px;
+}
+.menu__hamburguer[aria-expanded="true"] .menu__barras {
+  background-position: 0 6px, 0 -6px, 0 6px;
+  transform: rotate(45deg);
+}
+
+/* ---------- 8.1 Ícones (Windows Vista) ---------- */
+.ico {
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: contain;
+  vertical-align: -0.26em;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 1px 2px rgba(9, 52, 104, 0.28));
+}
+.ico--g {
+  width: 1.7em;
+  height: 1.7em;
+  vertical-align: -0.45em;
+}
+.ico--gg {
+  width: 2.6em;
+  height: 2.6em;
+  vertical-align: -0.7em;
+}
+.ico--menu {
+  width: 19px;
+  height: 19px;
+  vertical-align: -4px;
+}
+.ico--botao {
+  width: 21px;
+  height: 21px;
+  vertical-align: -5px;
+}
+.ico--dock {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+}
+.ico--chip {
+  width: 17px;
+  height: 17px;
+  vertical-align: -3px;
+}
+.ico--titulo {
+  width: 22px;
+  height: 22px;
+  vertical-align: -5px;
+  margin-right: 0.45rem;
+}
+.icone-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.icone-titulo .ico {
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  margin: 0;
+}
+.texto-icone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45ch;
+}
+
+/* toasts acima do dock, sem sobreposição */
+.toasts {
+  bottom: 96px;
+  top: auto;
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
 }
 
 /* ---------- 9. Modo 2000 (retrô / XP Luna) ---------- */

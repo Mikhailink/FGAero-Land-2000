@@ -6,6 +6,24 @@
    ========================================================================== */
 window.FGA = window.FGA || {};
 
+/* ---------------- Trilha sonora oficial (YouTube) ----------------
+   O site incorpora o vídeo pelo player oficial do YouTube, sem baixar nem
+   redistribuir áudio. Os direitos são do canal Focusyn Audio. */
+FGA.musica = {
+  titulo: "HOME: 2007 Aero Ambience | Windows Vista Center",
+  autor: "Focusyn Audio",
+  canal: "https://www.youtube.com/@FocusynAudio",
+  videoId: "RAADp1YxjGc",
+  url: "https://www.youtube.com/watch?v=RAADp1YxjGc",
+  thumb: "https://i.ytimg.com/vi/RAADp1YxjGc/hqdefault.jpg",
+  /* capa local usada quando a internet (ou o sandbox) bloqueia o i.ytimg.com */
+  posterLocal: "imagens/skyboxes/skyboxes_38.png",
+  descricao:
+    "Ambiente sonoro de 2007 no clima do Windows Vista Center: pads de vidro, texturas suaves e a sensação de tarde em frente ao monitor.",
+  nota:
+    "A trilha toca pelo player oficial do YouTube (embed). A aba “Sintetizado” continua disponível como alternativa offline, com faixas geradas na hora pela Web Audio API.",
+};
+
 /* ---------------- Linha do tempo ----------------
    Datas conferidas em fontes públicas (aesthetics.fandom, CARI, imprensa BR). */
 FGA.linhaDoTempo = [
@@ -105,112 +123,112 @@ FGA.linhaDoTempo = [
 /* ---------------- Curiosidades: a internet dos anos 2000 ---------------- */
 FGA.curiosidades = [
   {
-    icone: "📞",
+    icone: "desempenho",
     titulo: "O som do modem 56k",
     texto:
       "Antes do Wi-Fi havia um ritual: discar para o provedor e ouvir o modem gritar. Se alguém atendesse o telefone, a conexão caía — e a música que você baixava recomeçava do zero.",
     tags: ["conexão", "anos 2000"],
   },
   {
-    icone: "💬",
+    icone: "chat",
     titulo: "MSN: chamar atenção e apelidos gigantes",
     texto:
       "O MSN Messenger tinha o botão \"Chamar atenção\" (o <em>nudge</em>), que sacudia a janela do outro. Apelidos vinham cheios de caracteres estilizados, cores e até o nome da música que você estava ouvindo. Em 2002 já eram 75 milhões de usuários.",
     tags: ["messenger", "anos 2000"],
   },
   {
-    icone: "🇧🇷",
+    icone: "mundo",
     titulo: "Orkut era praticamente brasileiro",
     texto:
       "Criado em 2004 nos EUA, o Orkut virou fenômeno nacional: no fechamento, em 2014, 51,7% dos acessos eram do Brasil. O país tinha mais de 40 milhões de usuários em 2008. Comunidades como \"Eu Odeio Acordar Cedo\" chegaram a milhões de membros.",
     tags: ["orkut", "brasil"],
   },
   {
-    icone: "📸",
+    icone: "galeria",
     titulo: "Fotolog: o avô do Instagram",
     texto:
       "Antes dos stories, existia o Fotolog: uma foto por dia, com legendinha e comentários. Fez sucesso enorme no Brasil e na Espanha e sobreviveu até 2019, quando foi desativado de vez.",
     tags: ["fotolog", "brasil"],
   },
   {
-    icone: "🐠",
+    icone: "cenario",
     titulo: "O peixe tropical que estava em tudo",
     texto:
       "A imagem de um monitor funcionando como portal para a natureza — com peixes tropicais e água saindo da tela — foi criada pela sul-coreana <strong>Asadal Design</strong> por volta de 2007–2008. Virou wallpaper de fábrica de monitores e TVs: por isso ela parece estar na memória de todo mundo.",
     tags: ["wallpaper", "asalad", "ícone"],
   },
   {
-    icone: "🎮",
+    icone: "jogos",
     titulo: "Os jogos escondidos no sistema",
     texto:
       "O Windows Vista trazia Purble Place, Chess Titans, Mahjong Titans e Inkball. Antes deles, o XP escondia Campo Minado, Paciência e o lendário 3D Pinball Space Cadet. Ninguém instalava: eles já vinham instalados — e ninguém conseguia parar de jogar.",
     tags: ["jogos", "windows"],
   },
   {
-    icone: "💽",
+    icone: "mercado",
     titulo: "CDs de internet grátis",
     texto:
       "Bancas, revistas e caixas de correio vinham abarrotadas de CDs com \"50 horas grátis de internet\". Era a estratégia dos provedores da época — e virou uma das maiores coleções involuntárias de mídia do planeta.",
     tags: ["cd", "provedores"],
   },
   {
-    icone: "🎵",
+    icone: "som",
     titulo: "Kazaa, eMule e o CD gravado",
     texto:
       "Baixar música era um projeto de fim de semana: escolher arquivo, esperar, torcer para a pessoa que estava compartilhando não desconectar. Depois vinha a arte final — gravar o CD com caneta e escrever a lista de faixas à mão.",
     tags: ["p2p", "música"],
   },
   {
-    icone: "🪟",
+    icone: "janela",
     titulo: "Aero Glass explicado",
     texto:
       "A transparência com desfoque do Windows Aero chamava-se <em>glass</em>. O nome Aero é um backronym: Authentic, Energetic, Reflective e Open. O Vista ainda trazia o Flip 3D, que empilhava janelas em perspectiva como cartas.",
     tags: ["windows", "aero"],
   },
   {
-    icone: "⛰️",
+    icone: "bancada",
     titulo: "Bliss não era montagem",
     texto:
       "O papel de parede do XP foi fotografado por Charles O'Rear em janeiro de 1996, em Sonoma, Califórnia. A foto quase não teve edição e é considerada uma das imagens mais vistas da história — prova de que o paraíso Aero sempre foi meio real.",
     tags: ["windows", "bliss"],
   },
   {
-    icone: "🔤",
+    icone: "quadro",
     titulo: "Frutiger: a fonte das placas de aeroporto",
     texto:
       "Adrian Frutiger criou a família tipográfica que leva seu nome no começo dos anos 1970 para sinalizar o aeroporto Charles de Gaulle. Ela era tão legível que acabou em manuais de eletrodomésticos, painéis e — claro — nos logotipos da era Aero.",
     tags: ["tipografia", "frutiger"],
   },
   {
-    icone: "🚇",
+    icone: "laptop",
     titulo: "Frutiger Metro: a fase urbana",
     texto:
       "Entre 2005 e 2010 surgiu a vertente <strong>Frutiger Metro</strong>: silhuetas, grafismos chapados, cores saturadas e temas de transporte público e vida urbana. É o irmão mais \"design gráfico\" da estética — e costuma aparecer em campanhas de metrô e cartazes.",
     tags: ["metrô", "pós-aero"],
   },
   {
-    icone: "✨",
+    icone: "acessivel",
     titulo: "Lens flare não era erro",
     texto:
       "Auroras, bokeh e reflexos de lente eram aplicados de propósito. A ideia: fazer o digital parecer banhado de luz natural — como se a tela fosse uma janela aberta para fora.",
     tags: ["composição", "luz"],
   },
   {
-    icone: "🫧",
+    icone: "inicio",
     titulo: "Bolhas: o motivo mais repetido",
     texto:
       "Se existe um símbolo do Frutiger Aero, é a bolha. Transparente, esférica, com brilho no topo e refração embaixo. Ela resume o estilo: limpeza, leveza e a sensação de que a tecnologia era algo para brincar.",
     tags: ["motivos", "vidro"],
   },
   {
-    icone: "🎧",
+    icone: "mercado",
     titulo: "Toques polifônicos e capas de celular",
     texto:
       "A trilha sonora da época era feita de toques polifônicos (ou monofônicos, se o aparelho fosse mais simples), decorados com fitas e adesivos. Ter um MP3 player de 128 MB era motivo de orgulho público.",
     tags: ["celular", "música"],
   },
   {
-    icone: "🌱",
+    icone: "estudo",
     titulo: "O verde era uma promessa",
     texto:
       "A paleta azul-e-verde não era só bonita: era ideologia. O design da era Aero vendia a ideia de que a tecnologia poderia ser limpa, sustentável e integrada à natureza — muito antes de \"eco\" virar palavra de marketing.",
@@ -355,9 +373,9 @@ FGA.trivia = [
 /* ---------------- Bot MSN (assistente do site) ---------------- */
 FGA.bot = {
   nome: "AeroBot 2000",
-  status: "🌴 Férias em Aqua City — escuta música em MIDI",
+  status: "Férias em Aqua City — escuta música em MIDI",
   saudacao:
-    "oi!! bem-vindo(a) ao <strong>FGAero Land 2000</strong> 🌊 pergunta o que quiser sobre o Frutiger Aero, a internet dos anos 2000 ou o acervo de imagens. (digite <em>ajuda</em> pra ver os atalhos)",
+    "oi!! bem-vindo(a) ao <strong>FGAero Land 2000</strong> pergunta o que quiser sobre o Frutiger Aero, a internet dos anos 2000 ou o acervo de imagens. (digite <em>ajuda</em> pra ver os atalhos)",
   sugestoes: [
     "o que é frutiger aero?",
     "o que é frutiger metro?",
@@ -370,47 +388,47 @@ FGA.bot = {
     {
       chaves: ["oi", "olá", "ola", "e aí", "eai", "bom dia", "boa tarde", "boa noite", "hey", "salve"],
       resposta:
-        "oi!! 😄 tá conectado em 56k hoje? seja bem-vindo(a). quer saber sobre o estilo, os jogos ou o acervo?",
+        "oi!! tá conectado em 56k hoje? seja bem-vindo(a). quer saber sobre o estilo, os jogos ou o acervo?",
     },
     {
       chaves: ["o que é frutiger aero", "o que e frutiger aero", "frutiger aero", "aero", "estética", "estetica"],
       resposta:
-        "Frutiger Aero é o nome (criado em 2017 pelo CARI) para o visual que dominou <strong>2004 a 2013</strong>: vidro translúcido, bolhas, água, grama molhada, peixes tropicais, céu azul e tipografia Frutiger. Junta a fonte de Adrian Frutiger com o Windows Aero da Microsoft. 🌍💧",
+        "Frutiger Aero é o nome (criado em 2017 pelo CARI) para o visual que dominou <strong>2004 a 2013</strong>: vidro translúcido, bolhas, água, grama molhada, peixes tropicais, céu azul e tipografia Frutiger. Junta a fonte de Adrian Frutiger com o Windows Aero da Microsoft." + FGA.icones.html("mundo"),
     },
     {
       chaves: ["metro"],
       resposta:
-        "Frutiger Metro é a fase mais gráfica (2005–2010): silhuetas, cores saturadas, transporte público, gente em movimento. Tipo os cartazes de campanha de metrô. 🚇",
+        "Frutiger Metro é a fase mais gráfica (2005–2010): silhuetas, cores saturadas, transporte público, gente em movimento. Tipo os cartazes de campanha de metrô." + FGA.icones.html("laptop"),
     },
     {
       chaves: ["y2k", "2000"],
       resposta:
-        "Y2K Futurism vem antes: cromo, azul metálico, transparência plástica e ansiedade de milênio. O Frutiger Aero é o que veio depois, mais natural e ecológico. 🛸➡️🌿",
+        "Y2K Futurism vem antes: cromo, azul metálico, transparência plástica e ansiedade de milênio. O Frutiger Aero é o que veio depois, mais natural e ecológico." + FGA.icones.html("calmo"),
     },
     {
       chaves: ["galeria", "imagem", "imagens", "foto", "fotos", "acervo"],
       resposta:
-        "O acervo tem <strong>1284 arquivos</strong> catalogados em 19 pastas no repositório do GitHub, com <strong>%LOCAL%</strong> disponíveis aqui na versão web. Na <a href=\"galeria.html\">Galeria</a> você filtra por categoria e clica em qualquer imagem pra abrir em tela cheia. Todas seguem o padrão <code>pasta_numero.png</code>. 🖼️",
+        "O acervo tem <strong>1284 arquivos</strong> catalogados em 19 pastas no repositório do GitHub, com <strong>%LOCAL%</strong> disponíveis aqui na versão web. Na <a href=\"galeria.html\">Galeria</a> você filtra por categoria e clica em qualquer imagem pra abrir em tela cheia. Todas seguem o padrão <code>pasta_numero.png</code>." + FGA.icones.html("galeria"),
     },
     {
       chaves: ["download", "baixar", "repositório", "repositorio", "github", "código", "codigo"],
       resposta:
-        "As imagens originais estão em <a href=\"https://github.com/Mikhailink/FGAero-Land-2000\" target=\"_blank\" rel=\"noopener\">github.com/Mikhailink/FGAero-Land-2000</a>, com o código do site junto. Você também pode baixar o acervo pelo <a href=\"https://frutigeraeroarchive.org\" target=\"_blank\" rel=\"noopener\">Frutiger Aero Archive</a>. 📦",
+        "As imagens originais estão em <a href=\"https://github.com/Mikhailink/FGAero-Land-2000\" target=\"_blank\" rel=\"noopener\">github.com/Mikhailink/FGAero-Land-2000</a>, com o código do site junto. Você também pode baixar o acervo pelo <a href=\"https://frutigeraeroarchive.org\" target=\"_blank\" rel=\"noopener\">Frutiger Aero Archive</a>." + FGA.icones.html("mercado"),
     },
     {
       chaves: ["jogo", "jogos", "jogar", "minigame"],
       resposta:
-        "Tem 5 minigames: <a href=\"jogo-bolhas.html\">Estoura-Bolhas</a>, <a href=\"jogo-aquario.html\">Aquário 2000</a>, <a href=\"jogo-voo.html\">Voo Aero</a>, <a href=\"jogo-memoria.html\">Memória Gloss</a> e <a href=\"jogo-trivia.html\">Trivia Aero</a>. 🎮",
+        "Tem 5 minigames: <a href=\"jogo-bolhas.html\">Estoura-Bolhas</a>, <a href=\"jogo-aquario.html\">Aquário 2000</a>, <a href=\"jogo-voo.html\">Voo Aero</a>, <a href=\"jogo-memoria.html\">Memória Gloss</a> e <a href=\"jogo-trivia.html\">Trivia Aero</a>." + FGA.icones.html("jogos"),
     },
     {
       chaves: ["música", "musica", "som", "player", "áudio", "audio"],
       resposta:
-        "A música é gerada em tempo real pelo próprio navegador (Web Audio), faixa por faixa — nada de arquivo externo. Abre o dock ali embaixo e clica no 🎵 <em>Céu de 2006</em>. 🎧",
+        "A trilha do site é <strong>“HOME: 2007 Aero Ambience”</strong>, do canal <a href=\"https://www.youtube.com/watch?v=RAADp1YxjGc\" target=\"_blank\" rel=\"noopener\">Focusyn Audio</a> — toca pelo player oficial do YouTube, aqui dentro do site. Aperta <strong>M</strong> (ou o botão de som do topo) para ligar e pausar. Na aba <em>Sintetizado</em> do player também dá para ouvir as faixas geradas na hora pela Web Audio API." + FGA.icones.html("som"),
     },
     {
       chaves: ["cursor", "ponteiro"],
       resposta:
-        "O cursor é o <code>cur771.cur</code>, o ponteiro clássico do Windows Vista, guardado na pasta <code>css/</code>. No site está aplicado via CSS. 🖱️",
+        "O cursor é o <code>cur771.cur</code>, o ponteiro clássico do Windows Vista, guardado na pasta <code>css/</code>. No site está aplicado via CSS." + FGA.icones.html("acessivel"),
     },
     {
       chaves: ["curiosidade", "sabia", "fato", "trivia", "quiz"],
@@ -419,25 +437,25 @@ FGA.bot = {
     {
       chaves: ["orkut"],
       resposta:
-        "O Orkut nasceu em 24/01/2004 e foi desligado em 30/09/2014. Em 2008, mais de 40 milhões de brasileiros usavam — cerca de 75% de quem tinha internet no país. No fim, 51,7% dos acessos ainda eram do Brasil. 🇧🇷💙",
+        "O Orkut nasceu em 24/01/2004 e foi desligado em 30/09/2014. Em 2008, mais de 40 milhões de brasileiros usavam — cerca de 75% de quem tinha internet no país. No fim, 51,7% dos acessos ainda eram do Brasil." + FGA.icones.html("mundo"),
     },
     {
       chaves: ["msn", "messenger"],
       resposta:
-        "MSN Messenger: o <em>nudge</em> (chamar atenção), os apelidos com caracteres especiais, o status com nome da música. Em 2002 já eram 75 milhões de usuários. A Microsoft anunciou o fim em 2012–2013, migrando pro Skype. 💬",
+        "MSN Messenger: o <em>nudge</em> (chamar atenção), os apelidos com caracteres especiais, o status com nome da música. Em 2002 já eram 75 milhões de usuários. A Microsoft anunciou o fim em 2012–2013, migrando pro Skype." + FGA.icones.html("chat"),
     },
     {
       chaves: ["vista", "windows", "aero"],
       resposta:
-        "Windows Aero estreou no Vista (empresas em nov 2006; público em 30/01/2007) e chegou ao máximo no Windows 7 (2009), com Snap, Peek e Shake. Em 2012 o Windows 8 aposentou o vidro. 🪟",
+        "Windows Aero estreou no Vista (empresas em nov 2006; público em 30/01/2007) e chegou ao máximo no Windows 7 (2009), com Snap, Peek e Shake. Em 2012 o Windows 8 aposentou o vidro." + FGA.icones.html("janela"),
     },
     {
       chaves: ["obrigado", "valeu", "vlw", "brigado", "thanks"],
-      resposta: "de nada!! 💚 volta sempre — a gente fica aqui, escutando MIDI no fim da tarde. 🌇",
+      resposta: "de nada!! volta sempre — a gente fica aqui, escutando MIDI no fim da tarde.",
     },
     {
       chaves: ["tchau", "falou", "até", "ate", "adeus", "xau"],
-      resposta: "tchau!! manda um <em>nudge</em> quando voltar 😄🌊",
+      resposta: "tchau!! manda um <em>nudge</em> quando voltar.",
     },
     {
       chaves: ["ajuda", "help", "comandos", "o que posso perguntar"],
@@ -446,9 +464,9 @@ FGA.bot = {
     },
   ],
   padroes: [
-    "hmm, não achei isso na minha pasta de arquivos 🤔 tenta perguntar sobre <em>frutiger aero</em>, <em>orkut</em>, <em>galeria</em> ou <em>jogos</em>!",
-    "essa eu não sei 😅 mas eu sei bastante sobre vidro, bolhas e internet discada. manda outra?",
-    "o sinal caiu por um segundo 💾 reformula a pergunta? eu respondo sobre o estilo, o acervo e os minigames.",
+    "hmm, não achei isso na minha pasta de arquivos. Tenta perguntar sobre <em>frutiger aero</em>, <em>orkut</em>, <em>galeria</em> ou <em>jogos</em>!",
+    "essa eu não sei, mas eu sei bastante sobre vidro, bolhas e internet discada. manda outra?",
+    "o sinal caiu por um segundo. Reformula a pergunta? Eu respondo sobre o estilo, o acervo e os minigames.",
   ],
 };
 
@@ -462,6 +480,7 @@ FGA.jogos = [
     resumo:
       "As bolhas de sabão subiram pela tela. Estoure o máximo possível em 60 segundos — mas cuidado com as bolhas azuis: elas custam pontos.",
     como: "Clique/toque na bolha para estourar.",
+    semente: 0, /* bolha mais visível do acervo (bubbles_1) no cartão do hub */
     sprite: "bubbles",
     pontuacaoMax: 900,
   },
@@ -541,6 +560,18 @@ FGA.creditos = {
       o: "Informações sobre Bliss, Charles O'Rear e os papéis de parede do Windows XP.",
     },
   ],
+  musica: {
+    nome: "HOME: 2007 Aero Ambience | Windows Vista Center",
+    autor: "Focusyn Audio",
+    url: "https://www.youtube.com/watch?v=RAADp1YxjGc",
+    canal: "https://www.youtube.com/@FocusynAudio",
+    o: "Trilha oficial do site, escolhida por combinar com o clima do Windows Vista. Reproduzida pelo player incorporado do YouTube — os direitos são do canal.",
+  },
+  icones: {
+    nome: "Windows Vista (ícones)",
+    url: "https://github.com/Mikhailink/FGAero-Land-2000/tree/main/imagens/winVista",
+    o: "Os ícones da interface são os arquivos .ico originais do Windows Vista, do próprio acervo do repositório. Marcas da Microsoft usadas aqui apenas como referência histórica.",
+  },
   acervo: {
     repositorio: "https://github.com/Mikhailink/FGAero-Land-2000",
     arquivo: "https://frutigeraeroarchive.org",
@@ -550,7 +581,9 @@ FGA.creditos = {
   tecnicas: [
     "HTML5 semântico, CSS (grid, flex, backdrop-filter, custom properties) e JavaScript puro — sem framework.",
     "Cursor personalizado: <code>css/cur771.cur</code> (seta do Windows Vista).",
-    "Música e efeitos sonoros sintetizados em tempo real com a Web Audio API.",
+    "Ícones do Vista em <code>imagens/winVista/</code> (32 arquivos .ico do acervo).",
+    "Trilha oficial incorporada pelo player do YouTube + trilha alternativa sintetizada em tempo real (Web Audio API).",
+    "Interface com os ícones originais do Windows Vista (.ico convertidos para PNG por tools/gerar_icones.py).",
     "Minigames em Canvas 2D com ajuste de densidade de tela e pausa automática.",
     "Publicação: GitHub + Vercel (site estático, sem build).",
   ],

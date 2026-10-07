@@ -6,19 +6,76 @@ Uso:  python3 tools/gerar_paginas.py
 Saida: index.html, historia.html, galeria.html, jogos.html, curiosidades.html,
        creditos.html, 404.html e as 5 paginas de minigame.
 """
-import os, re
+import os
+import re, re
 
 RAIZ = "/home/user"
 SITE = "FGAero Land 2000"
 
 NAV = [
-    ("index.html", "Início"),
-    ("historia.html", "História"),
-    ("galeria.html", "Galeria"),
-    ("jogos.html", "Jogos"),
-    ("curiosidades.html", "Curiosidades"),
-    ("creditos.html", "Créditos"),
+    ("index.html", "Início", "inicio"),
+    ("historia.html", "História", "historia"),
+    ("galeria.html", "Galeria", "galeria"),
+    ("jogos.html", "Jogos", "jogos"),
+    ("curiosidades.html", "Curiosidades", "curiosidades"),
+    ("creditos.html", "Créditos", "creditos"),
 ]
+
+# mapa de icones do Windows Vista (arquivos em imagens/winVista/png)
+ICONES = {
+    "inicio": "vista_white",
+    "historia": "vista_book_3",
+    "galeria": "vista_photo_gallery",
+    "jogos": "vista_console",
+    "curiosidades": "vista_info",
+    "creditos": "vista_book_2",
+    "som": "vista_movie",
+    "musica": "vista_movie",
+    "cenario": "vista_personalization",
+    "retro": "vista_pc_1",
+    "calmo": "vista_sidebar_1",
+    "topo": "vista_get_started",
+    "chat": "vista_messenger",
+    "aviso": "vista_warning",
+    "sucesso": "vista_firewall_status_1",
+    "erro": "vista_firewall_status_2",
+    "busca": "vista_search_globe",
+    "acessivel": "vista_accessibility",
+    "mundo": "vista_netcenter",
+    "quadro": "vista_collab",
+    "tempo": "vista_cal_1",
+    "estudo": "vista_book_1",
+    "xbox": "vista_xbox",
+    "desempenho": "vista_perf_center",
+    "mercado": "vista_marketplace",
+    "laptop": "vista_pc_2",
+    "notas": "vista_sticky_notes",
+}
+
+
+_TOKEN_ICO = re.compile(r"%%ico:([a-z0-9_]+)(?::([a-z0-9_\-]+))?%%")
+
+
+def aplicar_icones(texto):
+    """Troca os marcadores %%ico:chave:classe%% pelas imagens do Windows Vista."""
+    return _TOKEN_ICO.sub(lambda m: ico(m.group(1), m.group(2) or ""), texto)
+
+
+def ico(chave, classe="", alt=""):
+    """Devolve a tag <img> de um icone do Windows Vista."""
+    arquivo = ICONES.get(chave)
+    if not arquivo:
+        return ""
+    classes = ("ico " + classe).strip()
+    return f'<img class="{classes}" src="imagens/winVista/png/{arquivo}.png" alt="{alt}" aria-hidden="true" decoding="async">'
+
+
+def botao(classe, href, chave_icone, rotulo, extra=""):
+    """Botao/enlace com icone do Vista no lugar do emoji."""
+    tag = "a" if href else "button"
+    atributo = f'href="{href}"' if href else 'type="button"'
+    return f'<{tag} class="{classe}" {atributo}{extra}>{ico(chave_icone, "ico--botao")}<span>{rotulo}</span></{tag}>'
+
 
 FAVICON = (
     "data:image/svg+xml,"
@@ -68,7 +125,8 @@ CENARIO = """<div class="cenario" aria-hidden="true">
 
 def cabecalho(pagina, titulo, descricao, scripts_extra_css=(), scripts_extra_js=()):
     menu = "\n".join(
-        f'          <a class="menu__link" href="{href}">{rotulo}</a>' for href, rotulo in NAV
+        f'          <a class="menu__link" href="{href}">{ico(chave, "ico--menu")}<span>{rotulo}</span></a>'
+        for href, rotulo, chave in NAV
     )
     css = "\n".join(f'    <link rel="stylesheet" href="{c}">' for c in scripts_extra_css)
     js = "\n".join(f'    <script src="{s}"></script>' for s in scripts_extra_js)
@@ -112,12 +170,12 @@ def cabecalho(pagina, titulo, descricao, scripts_extra_css=(), scripts_extra_js=
             <span class="marca__lema">arquivo vivo do Frutiger Aero</span>
           </span>
         </a>
-        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu">☰</button>
+        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu"><span class="menu__barras" aria-hidden="true"></span></button>
         <nav class="menu" id="menuPrincipal" aria-label="Navegação principal">
 {menu}
         </nav>
         <div class="topo__acoes">
-          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a música (atalho: M)" aria-label="Ligar ou pausar a música">🎵</button>
+          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a trilha (atalho: M)" aria-label="Ligar ou pausar a trilha sonora">%%ico:som:ico--topo%%</button>
         </div>
       </div>
     </header>
@@ -171,12 +229,13 @@ RODAPE = """    </main>
         <div class="rodape__base">
           <span>© <span id="anoAtual">2026</span> FGAero Land 2000 · projeto editorial sem fins comerciais.</span>
           <span>Imagens do acervo Frutiger Aero Archive · créditos aos autores originais.</span>
-          <span>Feito com vidro, bolhas e saudade. 🫧</span>
+          <span>Feito com vidro, bolhas e saudade.</span>
         </div>
       </div>
     </footer>
     <div class="dock" id="dock" role="toolbar" aria-label="Ferramentas do site"></div>
     <script src="js/acervo.js"></script>
+    <script src="js/icones.js"></script>
     <script src="js/conteudo.js"></script>
     <script src="js/aero.js"></script>
     <script src="js/paginas.js"></script>
@@ -190,6 +249,8 @@ RODAPE = """    </main>
 def pagina(pagina, titulo, descricao, corpo, css=(), js=()):
     html = cabecalho(pagina, titulo, descricao, css, js) + corpo + RODAPE
     html = html.replace("{EXTRA_JS}", "\n".join(f'    <script src="{s}"></script>' for s in js))
+    html = aplicar_icones(html)
+    assert "%%ico:" not in html, "sobrou marcador de icone sem substituir"
     return html
 
 
@@ -216,19 +277,19 @@ INDEX = """
               Bem-vindo ao arquivo vivo da estética <strong>Frutiger Aero</strong>: a era em que
               computadores, wallpapers e comerciais prometiam um futuro limpo, verde e banhado de
               luz. Aqui você navega por <strong>1.284 imagens catalogadas</strong>, joga minigames
-              com a cara de 2008, ouve uma trilha gerada em tempo real e lembra como era a internet
-              antes do design chapado.
+              com a cara de 2008, ouve a trilha oficial de 2007 e lembra como era a internet antes
+              do design chapado.
             </p>
             <div class="empilhado espaco-topo">
-              <a class="botao botao--grande botao--verde" href="jogos.html">▶ Jogar os minigames</a>
-              <a class="botao botao--grande" href="galeria.html">🖼️ Explorar a galeria</a>
-              <a class="botao botao--grande botao--fantasma" href="historia.html">📖 Ler a história</a>
+              <a class="botao botao--grande botao--verde" href="jogos.html">%%ico:jogos:ico--botao%%<span>Jogar os minigames</span></a>
+              <a class="botao botao--grande" href="galeria.html">%%ico:galeria:ico--botao%%<span>Explorar a galeria</span></a>
+              <a class="botao botao--grande botao--fantasma" href="historia.html">%%ico:historia:ico--botao%%<span>Ler a história</span></a>
             </div>
             <div class="hero__selos">
-              <span class="selo">☁️ Céus trocáveis</span>
-              <span class="selo">🎧 Música procedural</span>
-              <span class="selo">🖱️ Cursor do Windows Vista</span>
-              <span class="selo">🫧 Bolhas em tela cheia</span>
+              <span class="selo">%%ico:cenario:ico--chip%%<span>Céus trocáveis</span></span>
+              <span class="selo">%%ico:musica:ico--chip%%<span>Trilha de 2007 no YouTube</span></span>
+              <span class="selo">%%ico:acessivel:ico--chip%%<span>Cursor do Windows Vista</span></span>
+              <span class="selo">%%ico:inicio:ico--chip%%<span>Bolhas em tela cheia</span></span>
             </div>
           </div>
           <div class="hero__palco">
@@ -257,8 +318,8 @@ INDEX = """
               <span class="indicador__texto">minigames no arcade Aero</span>
             </div>
             <div class="indicador surgir">
-              <span class="indicador__numero" data-contar="3">0</span>
-              <span class="indicador__texto">faixas de música sintetizadas ao vivo</span>
+              <span class="indicador__numero" data-contar="1">0</span>
+              <span class="indicador__texto">trilha sonora oficial de 2007 (YouTube)</span>
             </div>
             <div class="indicador surgir">
               <span class="indicador__numero" data-contar="13">0</span>
@@ -397,19 +458,19 @@ INDEX = """
               <span class="cartao__rotulo">60 segundos</span>
               <h3>Estoura-Bolhas Aero</h3>
               <p>Combo até x4, bolhas douradas que dão tempo extra e bolhas pesadas que custam pontos.</p>
-              <p><a class="botao botao--pequeno botao--verde" href="jogo-bolhas.html">▶ Jogar</a></p>
+              <p><a class="botao botao--pequeno botao--verde" href="jogo-bolhas.html">%%ico:jogos:ico--botao%%<span>Jogar</span></a></p>
             </article>
             <article class="cartao surgir">
               <span class="cartao__rotulo">criativo</span>
               <h3>Aquário 2000</h3>
               <p>Monte sua própria cena Aero sobrepondo peixes, balões e objetos do acervo — e exporte em PNG.</p>
-              <p><a class="botao botao--pequeno" href="jogo-aquario.html">🎨 Criar cena</a></p>
+              <p><a class="botao botao--pequeno" href="jogo-aquario.html">%%ico:cenario:ico--botao%%<span>Criar cena</span></a></p>
             </article>
             <article class="cartao surgir">
               <span class="cartao__rotulo">endless</span>
               <h3>Voo Aero</h3>
               <p>Pilote o planador, colete balões e desvie dos brilhos escuros em velocidade crescente.</p>
-              <p><a class="botao botao--pequeno botao--ciano" href="jogo-voo.html">✈️ Voar</a></p>
+              <p><a class="botao botao--pequeno botao--ciano" href="jogo-voo.html">%%ico:mundo:ico--botao%%<span>Voar</span></a></p>
             </article>
           </div>
           <p class="centralizado espaco-topo">
@@ -422,15 +483,17 @@ INDEX = """
         <div class="container duas-colunas">
           <div class="surgir">
             <span class="sobretitulo">trilha sonora</span>
-            <h2>Música sintetizada na hora</h2>
+            <h2>A trilha oficial de 2007</h2>
             <p>
-              Nenhum arquivo de áudio é baixado: o site gera a trilha em tempo real com a
-              <strong>Web Audio API</strong> — pads de vidro, arpejos brilhantes e um sussurro de
-              nuvens. Os efeitos (bolha, vidro, acerto, erro) também são sintetizados.
+              A música do site é <strong>“HOME: 2007 Aero Ambience”</strong>, do canal
+              <strong>Focusyn Audio</strong>: um ambiente sonoro de Windows Vista Center, com pads
+              de vidro e texturas de fim de tarde. Ela toca pelo player oficial do YouTube, direto
+              aqui dentro — sem baixar nem redistribuir nada.
             </p>
             <p class="dica-uso">
-              Três faixas disponíveis: <em>Céu de 2006</em>, <em>Aquário MIDI</em> e
-              <em>Neo-Aero 2022</em>. Aperte <strong>M</strong> a qualquer momento.
+              Aperte <strong>M</strong> (ou o botão do topo) para tocar e pausar. A aba
+              <em>Sintetizado</em> guarda as faixas geradas na hora pela Web Audio API, para quem
+              quiser navegar sem o player externo.
             </p>
             <div id="areaPlayer"></div>
           </div>
@@ -440,12 +503,12 @@ INDEX = """
               <h3>O dock embaixo da tela</h3>
             </div>
             <ul class="lista-bolha">
-              <li><strong>🎵 Música Aero</strong> — abre o player flutuante estilo Vista.</li>
-              <li><strong>💡 Curiosidade</strong> — a janela arrastável com um fato da época.</li>
-              <li><strong>🎨 Trocar cenário</strong> — sorteia outro céu do acervo (64 disponíveis no repositório).</li>
-              <li><strong>🕹️ Modo 2000</strong> — janelas sólidas, bordas duras, visual de 2002.</li>
-              <li><strong>🍃 Efeitos calmos</strong> — reduz animações e bolhas.</li>
-              <li><strong>⬆️ Topo</strong> — volta ao começo da página.</li>
+              <li>%%ico:musica:ico--chip%% <strong>Trilha oficial</strong> — abre o player flutuante estilo Vista.</li>
+              <li>%%ico:curiosidades:ico--chip%% <strong>Curiosidade</strong> — a janela arrastável com um fato da época.</li>
+              <li>%%ico:cenario:ico--chip%% <strong>Trocar cenário</strong> — sorteia outro céu do acervo (64 disponíveis no repositório).</li>
+              <li>%%ico:retro:ico--chip%% <strong>Modo 2000</strong> — janelas sólidas, bordas duras, visual de 2002.</li>
+              <li>%%ico:calmo:ico--chip%% <strong>Efeitos calmos</strong> — reduz animações e bolhas.</li>
+              <li>%%ico:topo:ico--chip%% <strong>Topo</strong> — volta ao começo da página.</li>
             </ul>
             <div id="curiosidadeDestaque" class="espaco-topo"></div>
           </aside>
@@ -557,10 +620,10 @@ HISTORIA = """
             <h2>O mundo em que isso floresceu</h2>
           </div>
           <div class="grade grade--4">
-            <article class="cartao surgir"><h3>📶 Internet discada</h3><p>56k, modem gritando e CDs de "50 horas grátis" nas bancas. Baixar uma música era um evento.</p></article>
-            <article class="cartao surgir"><h3>💬 MSN e Orkut</h3><p>Apelidos com caracteres especiais, scraps, comunidades e o botão "chamar atenção".</p></article>
-            <article class="cartao surgir"><h3>📱 Gadgets brilhantes</h3><p>MP3 players, celulares com capa, telas de LCD azul e toques polifônicos.</p></article>
-            <article class="cartao surgir"><h3>🌱 Otimismo verde</h3><p>O discurso ecológico entra no design: tecnologia limpa, futuro sustentável, tudo brilhando.</p></article>
+            <article class="cartao surgir"><h3>%%ico:desempenho:ico--titulo%%Internet discada</h3><p>56k, modem gritando e CDs de "50 horas grátis" nas bancas. Baixar uma música era um evento.</p></article>
+            <article class="cartao surgir"><h3>%%ico:chat:ico--titulo%%MSN e Orkut</h3><p>Apelidos com caracteres especiais, scraps, comunidades e o botão "chamar atenção".</p></article>
+            <article class="cartao surgir"><h3>%%ico:laptop:ico--titulo%%Gadgets brilhantes</h3><p>MP3 players, celulares com capa, telas de LCD azul e toques polifônicos.</p></article>
+            <article class="cartao surgir"><h3>%%ico:calmo:ico--titulo%%Otimismo verde</h3><p>O discurso ecológico entra no design: tecnologia limpa, futuro sustentável, tudo brilhando.</p></article>
           </div>
         </div>
       </section>
@@ -583,7 +646,7 @@ GALERIA = """
             categoria, clique para ampliar e baixe o arquivo original.
           </p>
           <div class="empilhado espaco-topo">
-            <a class="botao botao--pequeno botao--verde" href="https://github.com/Mikhailink/FGAero-Land-2000" target="_blank" rel="noopener">⤓ Repositório com as 1.284 imagens</a>
+            <a class="botao botao--pequeno botao--verde" href="https://github.com/Mikhailink/FGAero-Land-2000" target="_blank" rel="noopener">%%ico:mundo:ico--botao%%<span>Repositório com as 1.284 imagens</span></a>
             <a class="botao botao--pequeno" href="https://frutigeraeroarchive.org" target="_blank" rel="noopener">Frutiger Aero Archive</a>
           </div>
         </div>
@@ -602,7 +665,7 @@ GALERIA = """
             </div>
             <div class="empilhado">
               <button class="botao botao--pequeno botao--fantasma" id="botaoTamanho" type="button" aria-pressed="false">
-                🔍 Alternar tamanho das miniaturas
+                %%ico:busca:ico--botao%%<span>Alternar tamanho das miniaturas</span>
               </button>
             </div>
           </div>
@@ -685,7 +748,7 @@ JOGOS = """
             <ul class="recordes" id="recordesPainel"></ul>
             <div class="empilhado espaco-topo">
               <button class="botao botao--pequeno botao--fantasma" id="botaoLimparRecordes" type="button">
-                🗑️ Limpar recordes salvos
+                %%ico:erro:ico--botao%%<span>Limpar recordes salvos</span>
               </button>
             </div>
           </div>
@@ -742,8 +805,8 @@ CURIOSIDADES = """
             </div>
             <div id="curiosidadeDestaque"></div>
             <div class="acoes-curiosidade">
-              <button class="botao botao--pequeno botao--verde" id="botaoCuriosidade" type="button">🎲 Sortear outra</button>
-              <a class="botao botao--pequeno botao--fantasma" href="jogo-trivia.html">🧠 Testar na trivia</a>
+              <button class="botao botao--pequeno botao--verde" id="botaoCuriosidade" type="button">%%ico:curiosidades:ico--botao%%<span>Sortear outra</span></button>
+              <a class="botao botao--pequeno botao--fantasma" href="jogo-trivia.html">%%ico:curiosidades:ico--botao%%<span>Testar na trivia</span></a>
             </div>
             <div class="espaco-topo">
               <h3>Gerador de apelido MSN</h3>
@@ -888,7 +951,7 @@ CREDITOS = """
               <tbody>
                 <tr><th>Front-end</th><td>HTML5, CSS3 (grid, flex, <code>backdrop-filter</code>, variáveis), JavaScript ES2020 sem framework</td></tr>
                 <tr><th>Jogos</th><td>Canvas 2D + DOM, engine própria em <code>js/jogos.js</code></td></tr>
-                <tr><th>Áudio</th><td>Web Audio API: 3 faixas e 9 efeitos sintetizados em tempo real</td></tr>
+                <tr><th>Áudio</th><td>Trilha oficial de 2007 pelo player do YouTube + Web Audio API: 3 faixas e 9 efeitos sintetizados em tempo real como reserva</td></tr>
                 <tr><th>Cursor</th><td><code>css/cur771.cur</code> — seta do Windows Vista</td></tr>
                 <tr><th>Imagens</th><td>1.284 no repositório · 171 otimizadas no site</td></tr>
                 <tr><th>Publicação</th><td>GitHub (código) + Vercel (site estático)</td></tr>
@@ -914,10 +977,10 @@ CREDITOS = """
             <h2>Como este site foi feito</h2>
           </div>
           <div class="grade grade--2">
-            <article class="cartao surgir"><h3>🎛️ Interatividade</h3><p>Dock estilo barra de tarefas, janelas flutuantes arrastáveis, toasts, troca de cenário em 10 céus do acervo, modo retrô e modo calmo. Atalhos de teclado em todas as páginas.</p></article>
-            <article class="cartao surgir"><h3>🖼️ Galeria</h3><p>Filtros por categoria, paginação, visualização ampliada com navegação por teclado, link para o original no repositório e exportação de cenas em PNG no Aquário.</p></article>
-            <article class="cartao surgir"><h3>🎮 Minigames</h3><p>Cinco jogos com engine compartilhada: contagem regressiva, pausa automática, recordes locais e ranking dos melhores resultados.</p></article>
-            <article class="cartao surgir"><h3>♿ Cuidados</h3><p>Estrutura semântica, texto alternativo, foco visível, contraste alto, suporte a movimento reduzido e funcionamento sem JavaScript nas partes essenciais.</p></article>
+            <article class="cartao surgir"><h3>%%ico:cenario:ico--titulo%%Interatividade</h3><p>Dock estilo barra de tarefas, janelas flutuantes arrastáveis, toasts, troca de cenário em 10 céus do acervo, modo retrô e modo calmo. Atalhos de teclado em todas as páginas.</p></article>
+            <article class="cartao surgir"><h3>%%ico:galeria:ico--titulo%%Galeria</h3><p>Filtros por categoria, paginação, visualização ampliada com navegação por teclado, link para o original no repositório e exportação de cenas em PNG no Aquário.</p></article>
+            <article class="cartao surgir"><h3>%%ico:jogos:ico--titulo%%Minigames</h3><p>Cinco jogos com engine compartilhada: contagem regressiva, pausa automática, recordes locais e ranking dos melhores resultados.</p></article>
+            <article class="cartao surgir"><h3>%%ico:acessivel:ico--titulo%%Cuidados</h3><p>Estrutura semântica, texto alternativo, foco visível, contraste alto, suporte a movimento reduzido e funcionamento sem JavaScript nas partes essenciais.</p></article>
           </div>
         </div>
       </section>
@@ -940,9 +1003,9 @@ PAGINA404 = """
               inicial ou vá jogar um minigame enquanto isso.
             </p>
             <div class="empilhado espaco-topo">
-              <a class="botao botao--grande botao--verde" href="index.html">🏠 Voltar ao início</a>
-              <a class="botao botao--grande" href="galeria.html">🖼️ Ver a galeria</a>
-              <a class="botao botao--grande botao--fantasma" href="jogos.html">🎮 Jogar</a>
+              <a class="botao botao--grande botao--verde" href="index.html">%%ico:inicio:ico--botao%%<span>Voltar ao início</span></a>
+              <a class="botao botao--grande" href="galeria.html">%%ico:galeria:ico--botao%%<span>Ver a galeria</span></a>
+              <a class="botao botao--grande botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Jogar</span></a>
             </div>
           </div>
           <div class="hero__palco">
@@ -957,13 +1020,13 @@ PAGINA404 = """
 # ==========================================================================
 # PÁGINAS DE JOGO
 # ==========================================================================
-def pagina_jogo(nome, titulo, subtitulo, sprite_alt, controles_html, canvas_id, extras=""):
+def pagina_jogo(nome, titulo, subtitulo, sprite_alt, controles_html, canvas_id, extras="", icone="jogos"):
     return f"""
       <section class="hero" style="padding-bottom:1.2rem">
         <div class="container">
           <span class="sobretitulo">minigame · FGAero Land 2000</span>
           <h1 class="hero__titulo" style="font-size:clamp(2rem,5vw,3rem)">
-            {titulo}
+            {ico(icone, "ico--gg")} {titulo}
             <span>{subtitulo}</span>
           </h1>
         </div>
@@ -975,14 +1038,14 @@ def pagina_jogo(nome, titulo, subtitulo, sprite_alt, controles_html, canvas_id, 
             <div class="hud">
               <div class="hud__grupo">
                 <span class="hud__item">pontos <strong data-hud="pontos">0</strong></span>
-                <span class="hud__item hud__item--destaque">🏆 <strong data-hud="recorde">0</strong></span>
+                <span class="hud__item hud__item--destaque">%%ico:sucesso:ico--chip%% <strong data-hud="recorde">0</strong></span>
                 {controles_html}
               </div>
               <div class="hud__grupo">
                 <span class="hud__barra"><span data-hud="barra"></span></span>
-                <button class="botao botao--pequeno" id="botaoPausa" type="button">⏸ Pausar</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button">↻ Reiniciar</button>
-                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">🎮 Outros jogos</a>
+                <button class="botao botao--pequeno" id="botaoPausa" type="button">%%ico:aviso:ico--botao%%<span>Pausar</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button">%%ico:jogos:ico--botao%%<span>Reiniciar</span></button>
+                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Outros jogos</span></a>
               </div>
             </div>
             <div class="palco-jogo {'palco-jogo--alto' if canvas_id == 'palcoVoo' else ''}">
@@ -1002,11 +1065,12 @@ def pagina_jogo(nome, titulo, subtitulo, sprite_alt, controles_html, canvas_id, 
 
 JOGO_BOLHAS = pagina_jogo(
     "bolhas",
-    "🫧 Estoura-Bolhas Aero",
+    "Estoura-Bolhas Aero",
     "60 segundos, combos até x4 e bolhas douradas que dão tempo extra",
     "Dica: a bolha azul-escura tira 15 pontos — deixe-a subir em paz. Você também pode tocar na tela.",
     '<span class="hud__item">tempo <strong data-hud="tempo">60s</strong></span>',
     "palcoBolhas",
+    icone="inicio",
     extras="""
             <div class="controles-toque">
               <span class="dica-uso">Toque nas bolhas diretamente no palco — o botão abaixo pausa:</span>
@@ -1015,16 +1079,17 @@ JOGO_BOLHAS = pagina_jogo(
 
 JOGO_VOO = pagina_jogo(
     "voo",
-    "✈️ Voo Aero",
+    "Voo Aero",
     "planador infinito entre nuvens, balões e brilhos perigosos",
     "Use ↑ ↓ (ou W S) no teclado; no celular, arraste o dedo pelo palco ou use os botões abaixo.",
     """<span class="hud__item">vidas <strong data-hud="vidas">3</strong></span>
                 <span class="hud__item">nível <strong data-hud="nivel">1</strong></span>""",
     "palcoVoo",
+    icone="mundo",
     extras="""
             <div class="controles-toque">
-              <button class="controles-toque__botao" type="button" data-controle="subir" aria-label="Subir">▲ Subir</button>
-              <button class="controles-toque__botao" type="button" data-controle="descer" aria-label="Descer">▼ Descer</button>
+              <button class="controles-toque__botao" type="button" data-controle="subir" aria-label="Subir"><span class="seta seta--cima" aria-hidden="true"></span> Subir</button>
+              <button class="controles-toque__botao" type="button" data-controle="descer" aria-label="Descer"><span class="seta seta--baixo" aria-hidden="true"></span> Descer</button>
             </div>""",
 )
 
@@ -1033,7 +1098,7 @@ JOGO_MEMORIA = """
         <div class="container">
           <span class="sobretitulo">minigame · FGAero Land 2000</span>
           <h1 class="hero__titulo" style="font-size:clamp(2rem,5vw,3rem)">
-            🃏 Memória Gloss
+            %%ico:jogos:ico--gg%% Memória Gloss
             <span>encontre os pares escondidos no acervo</span>
           </h1>
         </div>
@@ -1052,13 +1117,13 @@ JOGO_MEMORIA = """
               </div>
               <div class="hud__grupo">
                 <span class="hud__barra"><span data-hud="barra"></span></span>
-                <button class="botao botao--pequeno" id="botaoNivel" type="button">🎚️ Trocar nível</button>
-                <button class="botao botao--pequeno" id="botaoPausa" type="button">⏸ Pausar</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button">↻ Reiniciar</button>
-                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">🎮 Outros jogos</a>
+                <button class="botao botao--pequeno" id="botaoNivel" type="button">%%ico:desempenho:ico--botao%%<span>Trocar nível</span></button>
+                <button class="botao botao--pequeno" id="botaoPausa" type="button">%%ico:aviso:ico--botao%%<span>Pausar</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button">%%ico:jogos:ico--botao%%<span>Reiniciar</span></button>
+                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Outros jogos</span></a>
               </div>
             </div>
-            <div class="palco-jogo" style="background:linear-gradient(180deg,#8fd4ff,#dff4ff 60%,#bdea9a)">
+            <div class="palco-jogo palco-jogo--alto" style="background:linear-gradient(180deg,#8fd4ff,#dff4ff 60%,#bdea9a)">
               <div style="padding:1rem">
                 <div class="tabuleiro" id="tabuleiroMemoria"></div>
               </div>
@@ -1079,7 +1144,7 @@ JOGO_TRIVIA = """
         <div class="container">
           <span class="sobretitulo">minigame · FGAero Land 2000</span>
           <h1 class="hero__titulo" style="font-size:clamp(2rem,5vw,3rem)">
-            🧠 Trivia Aero
+            %%ico:curiosidades:ico--gg%% Trivia Aero
             <span>10 perguntas sobre a estética, o Windows Aero e a internet brasileira</span>
           </h1>
         </div>
@@ -1097,11 +1162,11 @@ JOGO_TRIVIA = """
               </div>
               <div class="hud__grupo">
                 <span class="hud__barra"><span data-hud="barra"></span></span>
-                <button class="botao botao--pequeno" id="botaoPausa" type="button">⏸ Pausar</button>
-                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">🎮 Outros jogos</a>
+                <button class="botao botao--pequeno" id="botaoPausa" type="button">%%ico:aviso:ico--botao%%<span>Pausar</span></button>
+                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Outros jogos</span></a>
               </div>
             </div>
-            <div class="palco-jogo" style="background:linear-gradient(180deg,#7fc9f2,#d8f0ff 60%,#c7ecac); padding:1rem">
+            <div class="palco-jogo palco-jogo--alto" style="background:linear-gradient(180deg,#7fc9f2,#d8f0ff 60%,#c7ecac); padding:1rem">
               <div id="palcoTrivia"></div>
               <div class="pontos-flutuantes" aria-hidden="true"></div>
               <div class="sobreposicao" id="sobreposicaoTrivia"></div>
@@ -1120,7 +1185,7 @@ JOGO_AQUARIO = """
         <div class="container">
           <span class="sobretitulo">minigame · FGAero Land 2000</span>
           <h1 class="hero__titulo" style="font-size:clamp(2rem,5vw,3rem)">
-            🎨 Aquário 2000
+            %%ico:cenario:ico--gg%% Aquário 2000
             <span>monte sua própria imagem Frutiger Aero e exporte em PNG</span>
           </h1>
         </div>
@@ -1131,17 +1196,17 @@ JOGO_AQUARIO = """
           <div class="area-jogo">
             <div class="hud">
               <div class="hud__grupo">
-                <button class="botao botao--pequeno" id="botaoSortear" type="button">🎲 Sortear cena</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoTrocarCeu" type="button">☁️ Trocar céu</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoAgua" type="button" aria-pressed="true">💧 Água</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoDesfazer" type="button">↩ Desfazer</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoLimpar" type="button">🗑️ Limpar</button>
+                <button class="botao botao--pequeno" id="botaoSortear" type="button">%%ico:cenario:ico--botao%%<span>Sortear cena</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoTrocarCeu" type="button">%%ico:cenario:ico--botao%%<span>Trocar céu</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoAgua" type="button" aria-pressed="true">%%ico:calmo:ico--botao%%<span>Água</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoDesfazer" type="button">%%ico:retro:ico--botao%%<span>Desfazer</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoLimpar" type="button">%%ico:erro:ico--botao%%<span>Limpar</span></button>
               </div>
               <div class="hud__grupo">
-                <button class="botao botao--pequeno botao--verde" id="botaoSalvar" type="button">⤓ Salvar PNG</button>
-                <a class="botao botao--pequeno botao--ciano" id="linkNovaAba" target="_blank" rel="noopener" hidden>🔗 Abrir quadro em nova aba</a>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoTelaCheia" type="button">⛶ Tela cheia</button>
-                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">🎮 Outros jogos</a>
+                <button class="botao botao--pequeno botao--verde" id="botaoSalvar" type="button">%%ico:galeria:ico--botao%%<span>Salvar PNG</span></button>
+                <a class="botao botao--pequeno botao--ciano" id="linkNovaAba" target="_blank" rel="noopener" hidden>%%ico:busca:ico--botao%%<span>Abrir quadro em nova aba</a>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoTelaCheia" type="button">%%ico:cenario:ico--botao%%<span>Tela cheia</span></button>
+                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Outros jogos</span></a>
               </div>
             </div>
             <div class="palco-jogo">
@@ -1167,7 +1232,7 @@ JOGO_AQUARIO = """
 def main():
     print("Gerando páginas...")
     escrever("index.html", pagina("index", f"{SITE} — arquivo vivo do Frutiger Aero",
-        "Arquivo interativo da estética Frutiger Aero: história, galeria com 1.284 imagens, cinco minigames, música sintetizada e curiosidades da internet dos anos 2000.", INDEX))
+        "Arquivo interativo da estética Frutiger Aero: história, galeria com 1.284 imagens, cinco minigames, a trilha sonora oficial de 2007 e curiosidades da internet dos anos 2000.", INDEX))
     escrever("historia.html", pagina("historia", f"História do Frutiger Aero — {SITE}",
         "Linha do tempo de 1996 a hoje: Bliss, Windows XP, Vista e Aero, Orkut, o declínio com o flat design e o renascimento Neo-Aero.", HISTORIA))
     escrever("galeria.html", pagina("galeria", f"Galeria do acervo — {SITE}",

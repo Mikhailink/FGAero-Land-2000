@@ -64,17 +64,17 @@
             <span class="marca__lema">arquivo vivo do Frutiger Aero</span>
           </span>
         </a>
-        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu">☰</button>
+        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu"><span class="menu__barras" aria-hidden="true"></span></button>
         <nav class="menu" id="menuPrincipal" aria-label="Navegação principal">
-          <a class="menu__link" href="index.html">Início</a>
-          <a class="menu__link" href="historia.html">História</a>
-          <a class="menu__link" href="galeria.html">Galeria</a>
-          <a class="menu__link" href="jogos.html">Jogos</a>
-          <a class="menu__link" href="curiosidades.html">Curiosidades</a>
-          <a class="menu__link" href="creditos.html">Créditos</a>
+          <a class="menu__link" href="index.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_white.png" alt="" aria-hidden="true" decoding="async"><span>Início</span></a>
+          <a class="menu__link" href="historia.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_book_3.png" alt="" aria-hidden="true" decoding="async"><span>História</span></a>
+          <a class="menu__link" href="galeria.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_photo_gallery.png" alt="" aria-hidden="true" decoding="async"><span>Galeria</span></a>
+          <a class="menu__link" href="jogos.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async"><span>Jogos</span></a>
+          <a class="menu__link" href="curiosidades.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_info.png" alt="" aria-hidden="true" decoding="async"><span>Curiosidades</span></a>
+          <a class="menu__link" href="creditos.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_book_2.png" alt="" aria-hidden="true" decoding="async"><span>Créditos</span></a>
         </nav>
         <div class="topo__acoes">
-          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a música (atalho: M)" aria-label="Ligar ou pausar a música">🎵</button>
+          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a trilha (atalho: M)" aria-label="Ligar ou pausar a trilha sonora"><img class="ico ico--topo" src="imagens/winVista/png/vista_movie.png" alt="" aria-hidden="true" decoding="async"></button>
         </div>
       </div>
     </header>
@@ -84,7 +84,7 @@
         <div class="container">
           <span class="sobretitulo">minigame · FGAero Land 2000</span>
           <h1 class="hero__titulo" style="font-size:clamp(2rem,5vw,3rem)">
-            🃏 Memória Gloss
+            <img class="ico ico--gg" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async"> Memória Gloss
             <span>encontre os pares escondidos no acervo</span>
           </h1>
         </div>
@@ -103,13 +103,13 @@
               </div>
               <div class="hud__grupo">
                 <span class="hud__barra"><span data-hud="barra"></span></span>
-                <button class="botao botao--pequeno" id="botaoNivel" type="button">🎚️ Trocar nível</button>
-                <button class="botao botao--pequeno" id="botaoPausa" type="button">⏸ Pausar</button>
-                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button">↻ Reiniciar</button>
-                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">🎮 Outros jogos</a>
+                <button class="botao botao--pequeno" id="botaoNivel" type="button"><img class="ico ico--botao" src="imagens/winVista/png/vista_perf_center.png" alt="" aria-hidden="true" decoding="async"><span>Trocar nível</span></button>
+                <button class="botao botao--pequeno" id="botaoPausa" type="button"><img class="ico ico--botao" src="imagens/winVista/png/vista_warning.png" alt="" aria-hidden="true" decoding="async"><span>Pausar</span></button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button"><img class="ico ico--botao" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async"><span>Reiniciar</span></button>
+                <a class="botao botao--pequeno botao--fantasma" href="jogos.html"><img class="ico ico--botao" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async"><span>Outros jogos</span></a>
               </div>
             </div>
-            <div class="palco-jogo" style="background:linear-gradient(180deg,#8fd4ff,#dff4ff 60%,#bdea9a)">
+            <div class="palco-jogo palco-jogo--alto" style="background:linear-gradient(180deg,#8fd4ff,#dff4ff 60%,#bdea9a)">
               <div style="padding:1rem">
                 <div class="tabuleiro" id="tabuleiroMemoria"></div>
               </div>
@@ -171,12 +171,13 @@
         <div class="rodape__base">
           <span>© <span id="anoAtual">2026</span> FGAero Land 2000 · projeto editorial sem fins comerciais.</span>
           <span>Imagens do acervo Frutiger Aero Archive · créditos aos autores originais.</span>
-          <span>Feito com vidro, bolhas e saudade. 🫧</span>
+          <span>Feito com vidro, bolhas e saudade.</span>
         </div>
       </div>
     </footer>
     <div class="dock" id="dock" role="toolbar" aria-label="Ferramentas do site"></div>
     <script src="js/acervo.js"></script>
+    <script src="js/icones.js"></script>
     <script src="js/conteudo.js"></script>
     <script src="js/aero.js"></script>
     <script src="js/paginas.js"></script>

@@ -14,7 +14,8 @@
     largura: 1280,
     altura: 800,
     duracao: 60,
-    tituloTela: "🫧 Estoura-Bolhas Aero",
+    icone: "inicio",
+    tituloTela: "Estoura-Bolhas Aero",
     texto: "São <strong>60 segundos</strong> para estourar o máximo de bolhas de sabão.",
     dicas: [
       "Clique/toque numa <strong>bolha clara</strong> para ganhar <strong>+10</strong>.",

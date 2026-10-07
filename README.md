@@ -1,8 +1,10 @@
 # FGAero Land 2000
 
 > **Arquivo vivo do Frutiger Aero** — história, galeria com **1.284 imagens**, cinco minigames,
-> música sintetizada em tempo real e curiosidades da internet brasileira dos anos 2000.
-> Feito só com HTML, CSS e JavaScript puro. Sem build, sem framework, sem dependências.
+> a trilha oficial de 2007 incorporada do YouTube (mais uma trilha sintetizada de reserva) e
+> curiosidades da internet brasileira dos anos 2000. Interface com os **ícones originais do
+> Windows Vista** (`.ico` → PNG). Feito só com HTML, CSS e JavaScript puro. Sem build, sem
+> framework, sem dependências.
 
 🔗 **Site:** _(coloque aqui a URL da Vercel após o deploy)_
 🎮 **Minigames:** `jogos.html` — Estoura-Bolhas, Aquário 2000, Voo Aero, Memória Gloss e Trivia Aero
@@ -59,13 +61,15 @@ do Windows Vista e do Windows 7, cujo nome é um backronym: *Authentic, Energeti
 │   └── jogo-trivia.js
 │
 ├── imagens/                 # 171 imagens usadas no site (19 categorias)
-│   ├── airplanes/ … └── water/     # padrão: pasta/pasta_numero.png
+│   ├── airplanes/ … water/  # padrão: pasta/pasta_numero.png
+│   └── winVista/            # 32 ícones .ico do Windows Vista + png/ convertidos
 │
 ├── tools/                   # scripts Python do projeto (não vão para o site)
 │   ├── scan.py              # lê cabeçalhos para descobrir dimensões das 1.284 imagens
 │   ├── baixar_imagens.py    # curadoria + download + otimização
 │   ├── gerar_acervo.py      # gera js/acervo.js
 │   ├── gerar_paginas.py     # gera todos os HTML a partir de um modelo único
+│   ├── gerar_icones.py      # converte os 32 .ico do Vista em imagens/winVista/png
 │   └── gerar_marca.py       # gera ícones e og-image.jpg
 │
 ├── manifest.json            # PWA: ícones, atalhos, cores
@@ -158,16 +162,38 @@ python3 tools/gerar_acervo.py
 
 ### Interatividade da era Aero
 - **Cursor personalizado** `css/cur771.cur` (seta do Windows Vista) aplicado via CSS em todo o site.
-- **Dock** inferior estilo barra de tarefas: música, curiosidade, trocar cenário, modo 2000, modo calmo, topo.
+- **Dock** inferior estilo barra de tarefas com os ícones do Vista: música, curiosidade, trocar cenário, modo 2000, modo calmo, topo.
 - **Janelas flutuantes** arrastáveis (minimizar/fechar) com barra de título.
 - **Toasts** de vidro, **cenário de céu trocável** (10 céus do acervo) e **bolhas animadas em canvas**.
 - **Modo 2000**: janelas sólidas com bordas duras, textura de 2002. **Modo calmo**: reduz animações.
 - Atalhos de teclado: `M` música · `C` cenário · `K` curiosidade · `←/→` galeria · `P` pausa nos jogos.
 
-### Música e som — Web Audio API
-- **3 faixas geradas em tempo real** (pads, baixo, arpejos e ruído filtrado): *Céu de 2006*, *Aquário MIDI* e *Neo-Aero 2022*.
+### Música e som
+- **Trilha oficial do site:** *HOME: 2007 Aero Ambience | Windows Vista Center*, do canal
+  [Focusyn Audio](https://www.youtube.com/@FocusynAudio) — reproduzida pelo **player incorporado do
+  YouTube** (`https://www.youtube.com/watch?v=RAADp1YxjGc`), por meio da *IFrame Player API*. Nada é
+  baixado nem redistribuído; os direitos são do canal.
+- **Trilha sintetizada de reserva** (Web Audio API): três faixas geradas em tempo real —
+  *Céu de 2006*, *Aquário MIDI* e *Neo-Aero 2022* — escolhidas na aba *Sintetizado* do player.
 - **9 efeitos** sintetizados: clique, vidro, bolha, acerto, erro, respingo, estrela, aviso, mensagem.
-- Nenhum arquivo de áudio é carregado — não há custo de banda nem direitos autorais.
+- A **capa do player** usa a miniatura oficial do vídeo (`i.ytimg.com`); se essa imagem estiver
+  bloqueada (sandbox, rede restrita), entra no lugar um céu do próprio acervo
+  (`FGA.musica.posterLocal` → `imagens/skyboxes/`).
+- Se o embed do YouTube estiver bloqueado (sandbox, rede restrita), o player avisa e oferece o link
+  direto do vídeo — e a trilha sintetizada assume o lugar.
+- A home tem **dois players independentes** (o da seção *trilha sonora* e o da janela
+  *Aero Player 2000*): ao tocar num deles, o iframe muda de lugar e o outro vira fachada de novo,
+  então nunca tocam dois vídeos ao mesmo tempo.
+
+### Ícones — Windows Vista (.ico)
+- Os 32 arquivos `.ico` de `imagens/winVista/` (do próprio acervo) são convertidos para PNG por
+  `tools/gerar_icones.py` e usados em **toda a interface**: menu, dock, botões, filtros, HUD dos
+  jogos, janelas flutuantes e toasts.
+- O mapa chave → arquivo fica em `js/icones.js` (`FGA.icones.mapa`) e o carregamento é feito por
+  `FGA.icones.el()`, com queda para texto caso algum PNG falte.
+- **Não há emoji na interface**: menu, botões, selos, HUD, janelas, chat do AeroBot, toasts e
+  tabelas usam os `.ico` do Vista. As páginas são geradas por `tools/gerar_paginas.py`, que troca
+  os marcadores `%%ico:chave:classe%%` pelo `<img>` correspondente (`aplicar_icones()`).
 
 ### Minigames
 | Jogo | Gênero | Destaques |
@@ -202,7 +228,27 @@ python3 tools/gerar_marca.py       # regenera ícones e og-image.jpg
 
 ---
 
-## 8. Créditos e licença
+## 8. Conferência automática
+
+O site foi testado num navegador real (Chromium + Playwright) com o servidor local no ar:
+
+| Verificação | Resultado |
+|---|---|
+| 12 páginas (`index` → `404`) | sem erro de JS, sem 404 e sem imagem quebrada |
+| Ícones do Vista | 12 a 44 por página, nenhum quebrado e **nenhum emoji na interface** |
+| Galeria | filtro *Todas (171)*, troca de categoria, lightbox e tecla `Esc` |
+| Música | trilha oficial carregando no `iframe`, dois players trocando de alvo nas duas direções |
+| AeroBot | resposta com ícones, 3 balões, nenhum ícone quebrado |
+| Minigames | os 4 jogos de tela começam, contam pontos e a sobreposição não é cortada |
+| Celular (390×844) | sem rolagem lateral, menu hambúrguer e dock ativos |
+
+Para repetir: suba o servidor (`python3 tools/servidor.py 8080`) e rode os scripts de
+verificação em `/tmp/play` (Playwright + Chromium do sistema) — os pontos medidos são os
+mesmos que estão nas tabelas acima.
+
+---
+
+## 9. Créditos e licença
 
 **Fontes:** [Frutiger Aero Archive](https://frutigeraeroarchive.org) ·
 [Aesthetics Wiki](https://aesthetics.fandom.com/wiki/Frutiger_Aero) ·

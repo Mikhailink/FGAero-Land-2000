@@ -31,13 +31,14 @@
     largura: 1280,
     altura: 800,
     duracao: 0,
-    tituloTela: "✈️ Voo Aero",
+    icone: "cenario",
+    tituloTela: "Voo Aero",
     texto: "Pilote o planador por um corredor de nuvens. Sobreviva o máximo que conseguir.",
     dicas: [
       "<strong>↑ / ↓</strong> (ou <strong>W / S</strong>) sobem e descem. No celular, arraste o dedo.",
       "Colete os <strong>balões</strong>: <strong>+10</strong> cada.",
       "Pegue os <strong>objetos brilhantes</strong> para <strong>+25</strong> e um escudo de 3 segundos.",
-      "Desvie dos <strong>brilhos escuros</strong>: cada toque custa 1 vida (você tem 3).",
+      "Desvie dos <strong>brilhos escuros</strong>: só dói se encostar de verdade. Você tem 3 vidas.",
       "A velocidade aumenta conforme você pontua.",
     ],
     teclas: ["ArrowUp", "ArrowDown", " ", "w", "s", "W", "S"],
@@ -49,7 +50,7 @@
       estado.invencivel = 0;
       estado.escudo = 0;
       estado.distancia = 0;
-      estado.velocidade = 380;
+      estado.velocidade = 270;
       entidades.length = 0;
       tempoSpawn = 0;
       j.pontos = 0;
@@ -74,9 +75,9 @@
       estado.y = limitar(estado.y, 70, A - 90);
 
       estado.distancia += estado.velocidade * dt;
-      estado.velocidade = Math.min(820, 380 + estado.distancia / 26);
+      estado.velocidade = Math.min(560, 270 + estado.distancia / 42);
       j.pontos = Math.floor(estado.distancia / 12) + estado.coletados;
-      j.nivel = 1 + Math.floor((estado.velocidade - 380) / 90);
+      j.nivel = 1 + Math.floor((estado.velocidade - 270) / 70);
 
       if (estado.invencivel > 0) estado.invencivel -= dt;
       if (estado.escudo > 0) estado.escudo -= dt;
@@ -101,7 +102,7 @@
       for (let i = entidades.length - 1; i >= 0; i--) {
         const e = entidades[i];
         const d = Math.hypot(e.x - caixaJogador.x, e.y - caixaJogador.y);
-        if (d < e.r + caixaJogador.r * 0.62) {
+        if (d < e.r + caixaJogador.r * 0.42) { /* antes 0.62: pegava sem encostar */
           if (e.tipo === "balao") {
             j.pontos += 10;
             estado.coletados += 10;
@@ -112,7 +113,7 @@
           }
           if (e.tipo === "bonus") {
             estado.coletados += 25;
-            j.pontoFlutuante(e.x, e.y, "+25 🛡️", true);
+            j.pontoFlutuante(e.x, e.y, "+25 com escudo", true);
             j.som("estrela");
             estado.escudo = 3;
             entidades.splice(i, 1);
@@ -300,14 +301,14 @@
   });
 
   /* ---------- estado ---------- */
-  const estado = { x: 260, y: 400, vy: 0, vidas: 3, invencivel: 0, escudo: 0, distancia: 0, velocidade: 380, coletados: 0 };
+  const estado = { x: 260, y: 400, vy: 0, vidas: 3, invencivel: 0, escudo: 0, distancia: 0, velocidade: 270, coletados: 0 };
   const entidades = [];
   const nuvensFundo = [];
   let tempoSpawn = 0;
 
   function criarEntidade(j) {
     const r = Math.random();
-    const tipo = r < 0.52 ? "balao" : r < 0.72 ? "bonus" : "perigo";
+    const tipo = r < 0.58 ? "balao" : r < 0.78 ? "bonus" : "perigo";
     const lista = tipo === "balao" ? sprites.baloes : tipo === "bonus" ? sprites.bonus : sprites.perigos;
     const img = lista.length ? lista[inteiro(0, lista.length - 1)] : null;
     const A = j.altura;
@@ -315,7 +316,7 @@
       tipo,
       img,
       x: j.largura + aleatorio(40, 220),
-      y: aleatorio(90, A - 120),
+      y: aleatorio(110, A - 150),
       r: tipo === "perigo" ? aleatorio(38, 62) : aleatorio(30, 48),
       giro: 0,
       giroVel: aleatorio(-0.4, 0.4),

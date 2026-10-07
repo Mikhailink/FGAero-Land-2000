@@ -87,6 +87,7 @@
 }
 .palco-jogo {
   position: relative;
+  min-height: 400px;
   border-radius: var(--raio);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.9);
@@ -100,6 +101,9 @@
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
+}
+.palco-jogo--alto {
+  min-height: 560px;
 }
 .palco-jogo--alto canvas {
   aspect-ratio: 4 / 5;
@@ -175,6 +179,9 @@
   backdrop-filter: blur(5px);
   z-index: 4;
   transition: opacity 0.28s ease, visibility 0.28s;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-content: safe center;
 }
 .sobreposicao[hidden] {
   display: grid;
@@ -189,6 +196,7 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(222, 242, 255, 0.86));
   border: 1px solid #fff;
   box-shadow: var(--sombra-forte), var(--brilho-topo);
+  margin: auto;
 }
 .sobreposicao__caixa h2,
 .sobreposicao__caixa h3 {
@@ -538,4 +546,20 @@
   .janela__corpo {
     padding: 0.9rem 0.9rem 1.05rem;
   }
+}
+
+/* setas dos controles de toque desenhadas em CSS (sem glifos no texto) */
+.seta {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  vertical-align: middle;
+}
+.seta--cima {
+  border-bottom: 9px solid #0b3a68;
+}
+.seta--baixo {
+  border-top: 9px solid #0b3a68;
 }

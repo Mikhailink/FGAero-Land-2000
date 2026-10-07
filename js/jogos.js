@@ -95,11 +95,16 @@
       },
 
       /* ---- sobreposição ---- */
-      mostrarSobreposicao({ titulo, texto, dicas = [], acoes = [], html = "" }) {
+      mostrarSobreposicao({ titulo, icone, texto, dicas = [], acoes = [], html = "" }) {
         if (!sobreposicao) return;
         sobreposicao.innerHTML = "";
         const caixa = criar("div", { classe: "sobreposicao__caixa" });
-        if (titulo) caixa.append(criar("h2", { html: titulo }));
+        if (titulo) {
+          const h = criar("h2", { classe: icone ? "icone-titulo" : "" });
+          if (icone && FGA.icones) h.append(FGA.icones.el(icone));
+          h.append(criar("span", { html: titulo }));
+          caixa.append(h);
+        }
         if (texto) caixa.append(criar("p", { html: texto }));
         if (dicas.length) {
           const ul = criar("ul", { classe: "sobreposicao__dicas" });
@@ -112,8 +117,9 @@
           const b = criar("button", {
             classe: "botao " + (a.classe || ""),
             type: "button",
-            texto: a.texto,
           });
+          if (a.icone && FGA.icones) b.append(FGA.icones.el(a.icone, { classe: "ico--botao" }));
+          b.append(criar("span", { texto: a.texto }));
           b.addEventListener("click", () => {
             FGA.audio && FGA.audio.desbloquear();
             a.aoClicar();
@@ -123,6 +129,7 @@
         if (acoes.length) caixa.append(acoesEl);
         sobreposicao.append(caixa);
         sobreposicao.hidden = false;
+        trazerParaTela(caixa, 170);
       },
       esconderSobreposicao() {
         if (sobreposicao) sobreposicao.hidden = true;
@@ -165,6 +172,7 @@
       },
       comecar() {
         this.esconderSobreposicao();
+        trazerParaTela(palco);
         this.preparar();
         if (cfg.iniciar) cfg.iniciar(this);
         this.contagemRegressiva(() => {
@@ -177,11 +185,12 @@
         if (this.estado !== "jogando") return;
         this.estado = "pausado";
         this.mostrarSobreposicao({
-          titulo: "⏸ Pausa",
+          icone: "aviso",
+          titulo: "Pausa",
           texto: "O céu continua ali. Respire e volte quando quiser.",
           acoes: [
-            { texto: "▶ Continuar", classe: "", aoClicar: () => this.continuar() },
-            { texto: "↻ Recomeçar", classe: "botao--fantasma", aoClicar: () => this.comecar() },
+            { texto: "Continuar", icone: "get_started", classe: "", aoClicar: () => this.continuar() },
+            { texto: "Recomeçar", icone: "jogos", classe: "botao--fantasma", aoClicar: () => this.comecar() },
           ],
         });
       },
@@ -204,12 +213,13 @@
         this.atualizarHUD();
         const temNome = FGA.recorde.tabela(this.nome).length >= 5;
         this.mostrarSobreposicao({
-          titulo: novo ? "🏆 Novo recorde!" : "Fim de jogo",
+          icone: novo ? "sucesso" : "aviso",
+          titulo: novo ? "Novo recorde!" : "Fim de jogo",
           texto: `${motivo || "Você terminou a rodada."}<br><strong>Pontuação: ${Math.round(this.pontos).toLocaleString("pt-BR")}</strong> · Recorde: ${recorde.toLocaleString("pt-BR")}`,
           html: this._htmlRecordes(),
           acoes: [
-            { texto: "↻ Jogar de novo", classe: "botao--verde", aoClicar: () => this.comecar() },
-            { texto: "🎮 Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
+            { texto: "Jogar de novo", icone: "jogos", classe: "botao--verde", aoClicar: () => this.comecar() },
+            { texto: "Outros jogos", icone: "jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
           ],
         });
         if (cfg.aoTerminar) cfg.aoTerminar(this, novo, temNome);
@@ -426,12 +436,13 @@
 
     /* ---- tela inicial ---- */
     jogo.mostrarSobreposicao({
-      titulo: cfg.tituloTela || "▶ Pronto para jogar?",
+      icone: cfg.icone || "jogos",
+      titulo: cfg.tituloTela || "Pronto para jogar?",
       texto: cfg.textoTela || cfg.descricao || "",
       dicas: cfg.dicas || [],
       acoes: [
-        { texto: "▶ Começar", classe: "botao--verde", aoClicar: () => jogo.comecar() },
-        { texto: "🎮 Outros jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
+        { texto: "Começar", icone: "get_started", classe: "botao--verde", aoClicar: () => jogo.comecar() },
+        { texto: "Outros jogos", icone: "jogos", classe: "botao--fantasma", aoClicar: () => (window.location.href = "jogos.html") },
       ],
     });
 
@@ -456,5 +467,22 @@
   };
 
   /* ---------- utilidades usadas pelos jogos ---------- */
-  FGA.jogoUtil = { carregarImagens, inteiro, escolher, aleatorio, limitar };
+  /* ---------- Utilidades compartilhadas ---------- */
+  /* Traz um elemento para o meio da tela quando ele não está inteiro na área
+     visível: sem isso, telas de jogo altas ficavam com os botões atrás do dock
+     fixo (ou abaixo da dobra), o que atrapalhava o clique no celular. */
+  function trazerParaTela(el, folga = 150) {
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const cabeInteiro = r.top >= 0 && r.bottom <= window.innerHeight - 8;
+    if (cabeInteiro) return;
+    const alvo = r.height > window.innerHeight - folga ? r.top + window.scrollY - 90 : null;
+    if (alvo === null) {
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: Math.max(0, alvo), behavior: "smooth" });
+    }
+  }
+
+  FGA.jogoUtil = { carregarImagens, inteiro, escolher, aleatorio, limitar, trazerParaTela };
 })();

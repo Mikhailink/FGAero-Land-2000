@@ -64,17 +64,17 @@
             <span class="marca__lema">arquivo vivo do Frutiger Aero</span>
           </span>
         </a>
-        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu">☰</button>
+        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu"><span class="menu__barras" aria-hidden="true"></span></button>
         <nav class="menu" id="menuPrincipal" aria-label="Navegação principal">
-          <a class="menu__link" href="index.html">Início</a>
-          <a class="menu__link" href="historia.html">História</a>
-          <a class="menu__link" href="galeria.html">Galeria</a>
-          <a class="menu__link" href="jogos.html">Jogos</a>
-          <a class="menu__link" href="curiosidades.html">Curiosidades</a>
-          <a class="menu__link" href="creditos.html">Créditos</a>
+          <a class="menu__link" href="index.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_white.png" alt="" aria-hidden="true" decoding="async"><span>Início</span></a>
+          <a class="menu__link" href="historia.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_book_3.png" alt="" aria-hidden="true" decoding="async"><span>História</span></a>
+          <a class="menu__link" href="galeria.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_photo_gallery.png" alt="" aria-hidden="true" decoding="async"><span>Galeria</span></a>
+          <a class="menu__link" href="jogos.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async"><span>Jogos</span></a>
+          <a class="menu__link" href="curiosidades.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_info.png" alt="" aria-hidden="true" decoding="async"><span>Curiosidades</span></a>
+          <a class="menu__link" href="creditos.html"><img class="ico ico--menu" src="imagens/winVista/png/vista_book_2.png" alt="" aria-hidden="true" decoding="async"><span>Créditos</span></a>
         </nav>
         <div class="topo__acoes">
-          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a música (atalho: M)" aria-label="Ligar ou pausar a música">🎵</button>
+          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a trilha (atalho: M)" aria-label="Ligar ou pausar a trilha sonora"><img class="ico ico--topo" src="imagens/winVista/png/vista_movie.png" alt="" aria-hidden="true" decoding="async"></button>
         </div>
       </div>
     </header>
@@ -136,7 +136,7 @@
               <tbody>
                 <tr><th>Front-end</th><td>HTML5, CSS3 (grid, flex, <code>backdrop-filter</code>, variáveis), JavaScript ES2020 sem framework</td></tr>
                 <tr><th>Jogos</th><td>Canvas 2D + DOM, engine própria em <code>js/jogos.js</code></td></tr>
-                <tr><th>Áudio</th><td>Web Audio API: 3 faixas e 9 efeitos sintetizados em tempo real</td></tr>
+                <tr><th>Áudio</th><td>Trilha oficial de 2007 pelo player do YouTube + Web Audio API: 3 faixas e 9 efeitos sintetizados em tempo real como reserva</td></tr>
                 <tr><th>Cursor</th><td><code>css/cur771.cur</code> — seta do Windows Vista</td></tr>
                 <tr><th>Imagens</th><td>1.284 no repositório · 171 otimizadas no site</td></tr>
                 <tr><th>Publicação</th><td>GitHub (código) + Vercel (site estático)</td></tr>
@@ -162,10 +162,10 @@
             <h2>Como este site foi feito</h2>
           </div>
           <div class="grade grade--2">
-            <article class="cartao surgir"><h3>🎛️ Interatividade</h3><p>Dock estilo barra de tarefas, janelas flutuantes arrastáveis, toasts, troca de cenário em 10 céus do acervo, modo retrô e modo calmo. Atalhos de teclado em todas as páginas.</p></article>
-            <article class="cartao surgir"><h3>🖼️ Galeria</h3><p>Filtros por categoria, paginação, visualização ampliada com navegação por teclado, link para o original no repositório e exportação de cenas em PNG no Aquário.</p></article>
-            <article class="cartao surgir"><h3>🎮 Minigames</h3><p>Cinco jogos com engine compartilhada: contagem regressiva, pausa automática, recordes locais e ranking dos melhores resultados.</p></article>
-            <article class="cartao surgir"><h3>♿ Cuidados</h3><p>Estrutura semântica, texto alternativo, foco visível, contraste alto, suporte a movimento reduzido e funcionamento sem JavaScript nas partes essenciais.</p></article>
+            <article class="cartao surgir"><h3><img class="ico ico--titulo" src="imagens/winVista/png/vista_personalization.png" alt="" aria-hidden="true" decoding="async">Interatividade</h3><p>Dock estilo barra de tarefas, janelas flutuantes arrastáveis, toasts, troca de cenário em 10 céus do acervo, modo retrô e modo calmo. Atalhos de teclado em todas as páginas.</p></article>
+            <article class="cartao surgir"><h3><img class="ico ico--titulo" src="imagens/winVista/png/vista_photo_gallery.png" alt="" aria-hidden="true" decoding="async">Galeria</h3><p>Filtros por categoria, paginação, visualização ampliada com navegação por teclado, link para o original no repositório e exportação de cenas em PNG no Aquário.</p></article>
+            <article class="cartao surgir"><h3><img class="ico ico--titulo" src="imagens/winVista/png/vista_console.png" alt="" aria-hidden="true" decoding="async">Minigames</h3><p>Cinco jogos com engine compartilhada: contagem regressiva, pausa automática, recordes locais e ranking dos melhores resultados.</p></article>
+            <article class="cartao surgir"><h3><img class="ico ico--titulo" src="imagens/winVista/png/vista_accessibility.png" alt="" aria-hidden="true" decoding="async">Cuidados</h3><p>Estrutura semântica, texto alternativo, foco visível, contraste alto, suporte a movimento reduzido e funcionamento sem JavaScript nas partes essenciais.</p></article>
           </div>
         </div>
       </section>
@@ -217,12 +217,13 @@
         <div class="rodape__base">
           <span>© <span id="anoAtual">2026</span> FGAero Land 2000 · projeto editorial sem fins comerciais.</span>
           <span>Imagens do acervo Frutiger Aero Archive · créditos aos autores originais.</span>
-          <span>Feito com vidro, bolhas e saudade. 🫧</span>
+          <span>Feito com vidro, bolhas e saudade.</span>
         </div>
       </div>
     </footer>
     <div class="dock" id="dock" role="toolbar" aria-label="Ferramentas do site"></div>
     <script src="js/acervo.js"></script>
+    <script src="js/icones.js"></script>
     <script src="js/conteudo.js"></script>
     <script src="js/aero.js"></script>
     <script src="js/paginas.js"></script>
