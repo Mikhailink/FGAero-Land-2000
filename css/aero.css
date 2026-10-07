@@ -1043,6 +1043,56 @@ details.acordeao[open] summary {
 }
 
 
+/* ---------- lista de trilhas do player (4 faixas) ---------- */
+.yt__faixas {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0.2rem;
+}
+.yt__faixa {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: left;
+  padding: 0.34rem 0.5rem;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(214, 238, 255, 0.55));
+  box-shadow: var(--brilho-topo);
+  color: #0b3a68;
+  font-size: 0.82rem;
+}
+.yt__faixa:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(206, 236, 255, 0.8));
+}
+.yt__faixa[aria-checked="true"] {
+  background: linear-gradient(180deg, #eaffd7, #a4e07a);
+  border-color: #8ccf5f;
+}
+.yt__faixa-capa {
+  width: 62px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 3px rgba(9, 52, 104, 0.25);
+  flex: 0 0 auto;
+}
+.yt__faixa-texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+.yt__faixa-texto small {
+  color: var(--texto-medio);
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+.yt__aviso .botao {
+  margin-left: 0.25rem;
+}
+
 /* miniaturas do acervo usadas como ícone das categorias */
 .filtro {
   display: inline-flex;

@@ -8,6 +8,7 @@
   "use strict";
   const FGA = window.FGA || {};
   const { inteiro, aleatorio, limitar, escolher, embaralhar, criar } = FGA.util;
+  const { criarMini, pronta, fonte, escalaTela } = FGA.jogoUtil;
 
   const canvas = document.querySelector("#palcoAquario");
   if (!canvas) return;
@@ -77,6 +78,8 @@
       const img = new Image();
       img.decoding = "async";
       img.src = FGA.imagem.url(rel);
+      /* os itens são desenhados com ~600 px: pré-reduz o original */
+      criarMini(img, 640);
       cache.set(rel, img);
     }
     return cache.get(rel);
@@ -176,7 +179,7 @@
   function desenhar(t) {
     const dt = 1 / 60;
     estado.tempo += dt;
-    const dpr = limitar(window.devicePixelRatio || 1, 1, 2);
+    const dpr = escalaTela(L);
     if (canvas.width !== Math.floor(L * dpr)) {
       canvas.width = Math.floor(L * dpr);
       canvas.height = Math.floor(A * dpr);
@@ -228,8 +231,8 @@
       const img = it.img;
       const larguraBase = L * 0.5 * it.escala * 2;
       const altBase = img && img.naturalWidth ? (larguraBase * img.naturalHeight) / img.naturalWidth : larguraBase;
-      if (img && img.complete && img.naturalWidth) {
-        ctx.drawImage(img, -larguraBase / 2, -altBase / 2, larguraBase, altBase);
+      if (pronta(img)) {
+        ctx.drawImage(fonte(img), -larguraBase / 2, -altBase / 2, larguraBase, altBase);
       } else {
         ctx.fillStyle = "rgba(255,255,255,0.5)";
         ctx.fillRect(-larguraBase / 2, -altBase / 2, larguraBase, altBase);
@@ -239,9 +242,9 @@
 
     // primeiro plano (grama/folhagem)
     const plano = estado.primeiroPlano ? cache.get(estado.primeiroPlano) : null;
-    if (plano && plano.complete && plano.naturalWidth) {
+    if (pronta(plano)) {
       const alt = Math.min(A * 0.42, (L * plano.naturalHeight) / plano.naturalWidth);
-      ctx.drawImage(plano, 0, A - alt, L, alt);
+      ctx.drawImage(fonte(plano), 0, A - alt, L, alt);
     }
 
     // moldura de vidro

@@ -10,6 +10,7 @@ window.FGA = window.FGA || {};
    O site incorpora o vídeo pelo player oficial do YouTube, sem baixar nem
    redistribuir áudio. Os direitos são do canal Focusyn Audio. */
 FGA.musica = {
+  /* faixa padrão (também é a primeira da lista de trilhas) */
   titulo: "HOME: 2007 Aero Ambience | Windows Vista Center",
   autor: "Focusyn Audio",
   canal: "https://www.youtube.com/@FocusynAudio",
@@ -18,10 +19,80 @@ FGA.musica = {
   thumb: "https://i.ytimg.com/vi/RAADp1YxjGc/hqdefault.jpg",
   /* capa local usada quando a internet (ou o sandbox) bloqueia o i.ytimg.com */
   posterLocal: "imagens/skyboxes/skyboxes_38.png",
+  /* MP3 gravado na pasta music/ do repositório — toca sem internet e sem embed */
+  mp3: "music/RAADp1YxjGc.mp3",
+  mp3Repo:
+    "https://raw.githubusercontent.com/Mikhailink/FGAero-Land-2000/main/music/" +
+    encodeURIComponent("Focusyn Audio - HOME： 2007 Aero Ambience ｜ Windows_140015713_23.mp3"),
   descricao:
     "Ambiente sonoro de 2007 no clima do Windows Vista Center: pads de vidro, texturas suaves e a sensação de tarde em frente ao monitor.",
   nota:
-    "A trilha toca pelo player oficial do YouTube (embed). A aba “Sintetizado” continua disponível como alternativa offline, com faixas geradas na hora pela Web Audio API.",
+    "As trilhas tocam pelo player oficial do YouTube (embed). Se o embed não iniciar, cada faixa pode ser ouvida direto do arquivo gravado na pasta music/ do projeto ou pela aba “Sintetizado”, que gera música na hora.",
+  /* --- as trilhas do site (YouTube) ---------------------------------- */
+  faixas: [
+    {
+      id: "RAADp1YxjGc",
+      titulo: "HOME: 2007 Aero Ambience | Windows Vista Center",
+      autor: "Focusyn Audio",
+      canal: "https://www.youtube.com/@FocusynAudio",
+      videoId: "RAADp1YxjGc",
+      url: "https://www.youtube.com/watch?v=RAADp1YxjGc",
+      thumb: "https://i.ytimg.com/vi/RAADp1YxjGc/hqdefault.jpg",
+      posterLocal: "imagens/skyboxes/skyboxes_38.png",
+      mp3: "music/RAADp1YxjGc.mp3",
+      mp3Repo:
+        "https://raw.githubusercontent.com/Mikhailink/FGAero-Land-2000/main/music/" +
+        encodeURIComponent("Focusyn Audio - HOME： 2007 Aero Ambience ｜ Windows_140015713_23.mp3"),
+      etiqueta: "2007 · Vista Center",
+      descricao:
+        "O ambiente que virou a cara do site: pads de vidro, eco de corredor e a calma do Windows Vista Center.",
+    },
+    {
+      id: "hDmC3gc3A0E",
+      titulo: "DREAM 2006: Nostalgic 2000s Ambience | Windows Media Immersion",
+      autor: "Focusyn Audio",
+      canal: "https://www.youtube.com/@FocusynAudio",
+      videoId: "hDmC3gc3A0E",
+      url: "https://www.youtube.com/watch?v=hDmC3gc3A0E",
+      thumb: "https://i.ytimg.com/vi/hDmC3gc3A0E/hqdefault.jpg",
+      posterLocal: "imagens/skyboxes/skyboxes_16.png",
+      mp3: "music/hDmC3gc3A0E.mp3",
+      mp3Repo: "https://raw.githubusercontent.com/Mikhailink/FGAero-Land-2000/main/music/hDmC3gc3A0E.mp3",
+      etiqueta: "2006 · sonho lúcido",
+      descricao:
+        "Sonho de 2006: sintetizadores suaves, brilho de tela de LCD e a sensação de fim de tarde no quarto.",
+    },
+    {
+      id: "kmRVciDPa00",
+      titulo: "Somewhere in 2007 — Frutiger Aero Playlist",
+      autor: "Velvette Diarry",
+      canal: "https://www.youtube.com/watch?v=kmRVciDPa00",
+      videoId: "kmRVciDPa00",
+      url: "https://www.youtube.com/watch?v=kmRVciDPa00",
+      thumb: "https://i.ytimg.com/vi/kmRVciDPa00/hqdefault.jpg",
+      posterLocal: "imagens/skyboxes/skyboxes_28.png",
+      mp3: "music/kmRVciDPa00.mp3",
+      mp3Repo: "https://raw.githubusercontent.com/Mikhailink/FGAero-Land-2000/main/music/kmRVciDPa00.mp3",
+      etiqueta: "playlist · 2007",
+      descricao:
+        "Uma coletânea no meio do caminho entre 2007 e hoje: teclados cristalinos e batidas de verão eterno.",
+    },
+    {
+      id: "Scw_anb0oig",
+      titulo: "A Brighter Age | Frutiger Aero Ambience",
+      autor: "Dreamfibre",
+      canal: "https://www.youtube.com/watch?v=Scw_anb0oig",
+      videoId: "Scw_anb0oig",
+      url: "https://www.youtube.com/watch?v=Scw_anb0oig",
+      thumb: "https://i.ytimg.com/vi/Scw_anb0oig/hqdefault.jpg",
+      posterLocal: "imagens/skyboxes/skyboxes_22.png",
+      mp3: "music/Scw_anb0oig.mp3",
+      mp3Repo: "https://raw.githubusercontent.com/Mikhailink/FGAero-Land-2000/main/music/Scw_anb0oig.mp3",
+      etiqueta: "neo-aero · otimismo",
+      descricao:
+        "“A Brighter Age”: o lado otimista do gênero, com acordes abertos e aquele horizonte de céu sem nuvem feia.",
+    },
+  ],
 };
 
 /* ---------------- Linha do tempo ----------------

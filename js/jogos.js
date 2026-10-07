@@ -11,7 +11,54 @@
   const FGA = window.FGA || {};
   const { $, $$, criar, inteiro, escolher, limitar, aleatorio } = FGA.util;
 
-  function carregarImagens(categoria, quantidade) {
+  /* ------------------------------------------------------------------
+     Imagens dos jogos
+     ------------------------------------------------------------------
+     O acervo é de imagens grandes (1500 px ou mais). Desenhar esses PNGs
+     encolhidos a cada quadro era o que deixava os jogos pesados — então,
+     no carregamento, cada imagem ganha uma versão reduzida em canvas
+     (img.mini) no tamanho em que ela realmente é desenhada, e o jogo usa
+     essa versão. Vale também para telas com dpr alto (ver escalaTela).
+     ------------------------------------------------------------------ */
+  function criarMini(img, ladoMax) {
+    if (!img || !ladoMax || img.mini) return;
+    const montar = () => {
+      if (img.mini || !img.naturalWidth) return;
+      const escala = Math.min(1, ladoMax / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(img.naturalWidth * escala));
+      c.height = Math.max(1, Math.round(img.naturalHeight * escala));
+      const g = c.getContext("2d");
+      g.imageSmoothingEnabled = true;
+      g.imageSmoothingQuality = "high";
+      g.drawImage(img, 0, 0, c.width, c.height);
+      img.mini = c;
+    };
+    if (img.complete && img.naturalWidth) montar();
+    else img.addEventListener("load", montar, { once: true });
+  }
+
+  /** A imagem já pode ser desenhada? (vale para <img> e para o mini) */
+  function pronta(img) {
+    if (!img) return false;
+    return !!(img.mini || (img.complete && img.naturalWidth));
+  }
+
+  /** O que vai para o drawImage: a versão reduzida, quando existe. */
+  function fonte(img) {
+    return (img && img.mini) || img;
+  }
+
+  function carregarImagem(rel, ladoMax = 0) {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = FGA.imagem.url(rel);
+    img.dataset.caminho = rel;
+    criarMini(img, ladoMax);
+    return img;
+  }
+
+  function carregarImagens(categoria, quantidade, ladoMax = 0) {
     const lista = (FGA.acervo[categoria] || []).slice();
     const escolhidas = [];
     const copia = lista.slice();
@@ -19,13 +66,15 @@
       const i = Math.floor(Math.random() * copia.length);
       escolhidas.push(copia.splice(i, 1)[0]);
     }
-    return escolhidas.map((rel) => {
-      const img = new Image();
-      img.decoding = "async";
-      img.src = FGA.imagem.url(rel);
-      img.dataset.caminho = rel;
-      return img;
-    });
+    return escolhidas.map((rel) => carregarImagem(rel, ladoMax));
+  }
+
+  /* Densidade de tela com teto: em monitores 4K/Retina o dpr 2 fazia o
+     canvas ter 2560 px de largura e o jogo ficava pesado sem ganho visível.
+     Aqui o dpr vai no máximo até 1.5 e a largura real até 1600 px. */
+  function escalaTela(larguraLogica) {
+    const dpr = limitar(window.devicePixelRatio || 1, 1, 1.5);
+    return Math.max(1, Math.min(dpr, 1600 / Math.max(1, larguraLogica)));
   }
 
   /** Cria um jogo completo ligado a um canvas e ao HUD da página. */
@@ -309,7 +358,7 @@
 
     /* ---- ajuste de densidade de tela ---- */
     function medir() {
-      const dpr = limitar(window.devicePixelRatio || 1, 1, 2);
+      const dpr = escalaTela(L);
       canvas.width = Math.floor(L * dpr);
       canvas.height = Math.floor(A * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -484,5 +533,17 @@
     }
   }
 
-  FGA.jogoUtil = { carregarImagens, inteiro, escolher, aleatorio, limitar, trazerParaTela };
+  FGA.jogoUtil = {
+    carregarImagens,
+    carregarImagem,
+    criarMini,
+    pronta,
+    fonte,
+    escalaTela,
+    inteiro,
+    escolher,
+    aleatorio,
+    limitar,
+    trazerParaTela,
+  };
 })();

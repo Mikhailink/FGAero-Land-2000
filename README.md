@@ -1,7 +1,7 @@
 # FGAero Land 2000
 
 > **Arquivo vivo do Frutiger Aero** — história, galeria com **1.284 imagens**, cinco minigames,
-> a trilha oficial de 2007 incorporada do YouTube (mais uma trilha sintetizada de reserva) e
+> as trilhas de ambiência do YouTube (mais o MP3 da pasta `music/` e uma trilha sintetizada de reserva) e
 > curiosidades da internet brasileira dos anos 2000. Interface com os **ícones originais do
 > Windows Vista** (`.ico` → PNG). Feito só com HTML, CSS e JavaScript puro. Sem build, sem
 > framework, sem dependências.
@@ -64,13 +64,19 @@ do Windows Vista e do Windows 7, cujo nome é um backronym: *Authentic, Energeti
 │   ├── airplanes/ … water/  # padrão: pasta/pasta_numero.png
 │   └── winVista/            # 32 ícones .ico do Windows Vista + png/ convertidos
 │
+├── music/                   # MP3 das trilhas, para tocar offline: music/<id do vídeo>.mp3
+│   └── RAADp1YxjGc.mp3       # trilha 1 (HOME: 2007 Aero Ambience)
+│
 ├── tools/                   # scripts Python do projeto (não vão para o site)
 │   ├── scan.py              # lê cabeçalhos para descobrir dimensões das 1.284 imagens
 │   ├── baixar_imagens.py    # curadoria + download + otimização
 │   ├── gerar_acervo.py      # gera js/acervo.js
 │   ├── gerar_paginas.py     # gera todos os HTML a partir de um modelo único
 │   ├── gerar_icones.py      # converte os 32 .ico do Vista em imagens/winVista/png
-│   └── gerar_marca.py       # gera ícones e og-image.jpg
+│   ├── gerar_marca.py       # gera ícones e og-image.jpg
+│   ├── servidor.py          # servidor estático de desenvolvimento (porta 8080)
+│   └── teste-navegador.js   # conferência no Chromium (Playwright): 12 páginas, jogos, música
+
 │
 ├── manifest.json            # PWA: ícones, atalhos, cores
 ├── vercel.json              # cache, segurança e cleanUrls
@@ -169,18 +175,32 @@ python3 tools/gerar_acervo.py
 - Atalhos de teclado: `M` música · `C` cenário · `K` curiosidade · `←/→` galeria · `P` pausa nos jogos.
 
 ### Música e som
-- **Trilha oficial do site:** *HOME: 2007 Aero Ambience | Windows Vista Center*, do canal
-  [Focusyn Audio](https://www.youtube.com/@FocusynAudio) — reproduzida pelo **player incorporado do
-  YouTube** (`https://www.youtube.com/watch?v=RAADp1YxjGc`), por meio da *IFrame Player API*. Nada é
-  baixado nem redistribuído; os direitos são do canal.
+- **Quatro trilhas de ambiência Aero**, todas listadas no player (com capa, canal e etiqueta):
+
+  | # | Trilha | Canal | Vídeo |
+  |---|---|---|---|
+  | 1 | HOME: 2007 Aero Ambience \| Windows Vista Center | Focusyn Audio | `RAADp1YxjGc` |
+  | 2 | DREAM 2006: Nostalgic 2000s Ambience | Focusyn Audio | `hDmC3gc3A0E` |
+  | 3 | Somewhere in 2007 — Frutiger Aero Playlist | Velvette Diarry | `kmRVciDPa00` |
+  | 4 | A Brighter Age \| Frutiger Aero Ambience | Dreamfibre | `Scw_anb0oig` |
+
+- Cada faixa toca pelo **player incorporado do YouTube** (*IFrame Player API*). Nada é baixado nem
+  redistribuído pelo site: os direitos são dos canais. Trocar de faixa usa `loadVideoById`, então o
+  player não é recriado e a música continua no mesmo encaixe.
+- **Reserva offline — pasta `music/`:** o botão *Ouvir do arquivo (music/)* toca o MP3 gravado no
+  projeto (`music/<id do vídeo>.mp3`, com queda para o mesmo caminho no repositório). É a saída para
+  preview em sandbox, rede restrita ou embed bloqueado, porque não depende de API externa.
+  Hoje a faixa 1 já vem com o arquivo; para as outras três basta salvar o MP3 em `music/` com o nome
+  do id do vídeo (`hDmC3gc3A0E.mp3`, `kmRVciDPa00.mp3`, `Scw_anb0oig.mp3`) — o player passa a
+  encontrá-las sozinho.
 - **Trilha sintetizada de reserva** (Web Audio API): três faixas geradas em tempo real —
   *Céu de 2006*, *Aquário MIDI* e *Neo-Aero 2022* — escolhidas na aba *Sintetizado* do player.
 - **9 efeitos** sintetizados: clique, vidro, bolha, acerto, erro, respingo, estrela, aviso, mensagem.
 - A **capa do player** usa a miniatura oficial do vídeo (`i.ytimg.com`); se essa imagem estiver
   bloqueada (sandbox, rede restrita), entra no lugar um céu do próprio acervo
   (`FGA.musica.posterLocal` → `imagens/skyboxes/`).
-- Se o embed do YouTube estiver bloqueado (sandbox, rede restrita), o player avisa e oferece o link
-  direto do vídeo — e a trilha sintetizada assume o lugar.
+- Quando o embed não inicia, o aviso do player já vem com o botão do arquivo local e o link direto
+  do YouTube na mesma linha.
 - A home tem **dois players independentes** (o da seção *trilha sonora* e o da janela
   *Aero Player 2000*): ao tocar num deles, o iframe muda de lugar e o outro vira fachada de novo,
   então nunca tocam dois vídeos ao mesmo tempo.
@@ -200,12 +220,18 @@ python3 tools/gerar_acervo.py
 |---|---|---|
 | Estoura-Bolhas Aero | Clique, 60s | combos até x4, bolha dourada (+50 e +2s), bolha pesada (−15) |
 | Aquário 2000 | Criativo | posiciona/arrasta/rotaciona sprites do acervo e exporta **PNG** |
-| Voo Aero | Endless | 3 vidas, escudo, dificuldade crescente, controle por toque |
+| Voo Aero | Endless | 3 vidas, escudo, dificuldade crescente, controle por toque — planador com a imagem `airplanes_2` |
 | Memória Gloss | Memória | 3 níveis, cronômetro, bônus por rapidez, pares com imagens reais |
 | Trivia Aero | Quiz | 10 perguntas sorteadas, explicação em cada resposta, sequência de acertos |
 
 Todos salvam **recorde local**, têm **contagem 3‑2‑1**, **pausa automática** fora da tela e
 respeitam `prefers-reduced-motion`.
+
+**Sobre a resolução dos jogos:** os canvases rodam na proporção real do jogo (**16:10**, base
+1280×800), com teto de densidade de tela (`FGA.jogoUtil.escalaTela`: dpr no máximo 1.5 e largura
+real até 1600 px) e as sprites chegam ao `drawImage` já reduzidas (`img.mini`, criado por
+`FGA.jogoUtil.criarMini`) — antes o palco do Voo Aero era forçado a 4:5 e virava um canvas de
+~1450 px de altura, esticando o jogo.
 
 ### Acessibilidade e responsividade
 Estrutura semântica, rótulos ARIA, foco visível, contraste alto, navegação por teclado,
@@ -237,14 +263,22 @@ O site foi testado num navegador real (Chromium + Playwright) com o servidor loc
 | 12 páginas (`index` → `404`) | sem erro de JS, sem 404 e sem imagem quebrada |
 | Ícones do Vista | 12 a 44 por página, nenhum quebrado e **nenhum emoji na interface** |
 | Galeria | filtro *Todas (171)*, troca de categoria, lightbox e tecla `Esc` |
-| Música | trilha oficial carregando no `iframe`, dois players trocando de alvo nas duas direções |
+| Música | 4 trilhas na lista, troca de faixa, MP3 local tocando e dois players trocando de alvo |
 | AeroBot | resposta com ícones, 3 balões, nenhum ícone quebrado |
-| Minigames | os 4 jogos de tela começam, contam pontos e a sobreposição não é cortada |
+| Minigames | os 4 jogos com tela de início começam e contam; o Aquário desenha o quadro (2,3 MB em PNG) |
 | Celular (390×844) | sem rolagem lateral, menu hambúrguer e dock ativos |
 
-Para repetir: suba o servidor (`python3 tools/servidor.py 8080`) e rode os scripts de
-verificação em `/tmp/play` (Playwright + Chromium do sistema) — os pontos medidos são os
-mesmos que estão nas tabelas acima.
+Para repetir:
+
+```bash
+npm i -D playwright && npx playwright install chromium   # só na primeira vez
+python3 tools/servidor.py 8080                           # num terminal
+node tools/teste-navegador.js                            # noutro terminal
+```
+
+O script (`tools/teste-navegador.js`) percorre as 12 páginas, a galeria, o player, o chat, os 5
+minigames e o layout de celular, e sai com código de erro se algo falhar. Use
+`SCREENSHOTS=1` para guardar as capturas em `./capturas`.
 
 ---
 

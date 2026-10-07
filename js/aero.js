@@ -861,6 +861,122 @@
   }
 
   let contadorYt = 0;
+  /* ------------------------------------------------------------------
+     Trilha do arquivo local: toca o MP3 gravado na pasta music/ do
+     projeto (ou o mesmo arquivo no repositório). Serve para quando o
+     embed do YouTube não inicia — preview em sandbox, rede restrita,
+     embed bloqueado — e não depende de nenhuma API externa.
+     ------------------------------------------------------------------ */
+  const musicaMP3 = {
+    el: null,
+    faixaId: null,
+    tocando: false,
+    erro: "",
+    aoMudar: null,
+
+    get dados() {
+      return FGA.musica || {};
+    },
+
+    faixa(id) {
+      const f = (this.dados.faixas || []).find((x) => x.id === id);
+      return f || this.dados;
+    },
+    fontes(f) {
+      const lista = [];
+      if (f.mp3) lista.push(f.mp3);
+      if (f.mp3Repo) lista.push(f.mp3Repo);
+      /* o repositório guarda o MP3 da primeira trilha com o nome original */
+      if (f.id === "RAADp1YxjGc" && this.dados.mp3Repo) lista.push(this.dados.mp3Repo);
+      return lista.filter((x, i) => x && lista.indexOf(x) === i);
+    },
+    garantir() {
+      if (this.el) return this.el;
+      const el = new Audio();
+      el.preload = "none";
+      el.crossOrigin = "anonymous";
+      el.addEventListener("ended", () => {
+        this.tocando = false;
+        this.avisar();
+      });
+      el.addEventListener("pause", () => {
+        this.tocando = false;
+        this.avisar();
+      });
+      el.addEventListener("playing", () => {
+        this.tocando = true;
+        this.erro = "";
+        this.avisar();
+      });
+      this.el = el;
+      return el;
+    },
+    async tocar(id) {
+      const f = this.faixa(id || this.faixaId);
+      const fontes = this.fontes(f);
+      if (!fontes.length) {
+        this.falhar("Esta trilha ainda não tem arquivo na pasta music/ do projeto.");
+        return;
+      }
+      const el = this.garantir();
+      musicaYT.pausar();
+      audio.pausar();
+      this.faixaId = f.id;
+      this.tocando = false;
+      this.erro = "";
+      let i = 0;
+      el.onerror = () => {
+        i += 1;
+        if (i < fontes.length) {
+          el.src = fontes[i];
+          el.play().catch(() => {});
+        } else {
+          this.falhar("Não encontrei o arquivo desta trilha na pasta music/ do projeto.");
+        }
+      };
+      el.src = fontes[0];
+      el.volume = audio.volume;
+      try {
+        await el.play();
+        this.tocando = true;
+        this.avisar();
+      } catch (e) {
+        this.tocando = false;
+        this.falhar("O navegador bloqueou o áudio automático — toque de novo no botão.");
+      }
+    },
+    pausar() {
+      if (this.el) {
+        try {
+          this.el.pause();
+        } catch (e) {}
+      }
+      this.tocando = false;
+      this.avisar();
+    },
+    alternar(id) {
+      if (this.tocando && (!id || id === this.faixaId)) this.pausar();
+      else this.tocar(id);
+    },
+    volume(v) {
+      if (this.el) {
+        try {
+          this.el.volume = Math.max(0, Math.min(1, v));
+        } catch (e) {}
+      }
+    },
+    falhar(detalhe) {
+      this.erro = detalhe || "";
+      this.tocando = false;
+      this.avisar();
+      FGA.toast("Arquivo de música", detalhe, "aviso");
+    },
+    avisar() {
+      if (typeof this.aoMudar === "function") this.aoMudar();
+    },
+  };
+  FGA.musicaMP3 = musicaMP3;
+
   const musicaYT = {
     player: null,
     /* cada player do site (seção da página e janela do dock) tem seu próprio
@@ -868,6 +984,8 @@
        funcionava. */
     alvos: [],
     alvoEmUsoId: null,
+    /* qual trilha está escolhida (id de FGA.musica.faixas) */
+    faixaAtual: (FGA.musica && FGA.musica.videoId) || "RAADp1YxjGc",
     /* o YouTube troca o alvo por um <iframe> com o MESMO id, então a
        existência do id (e não do nó antigo) é o que importa aqui */
     temAlvo() {
@@ -891,6 +1009,40 @@
       return FGA.musica || {};
     },
 
+    get faixas() {
+      const d = this.dados;
+      return d.faixas && d.faixas.length ? d.faixas : [d];
+    },
+
+    /* a trilha escolhida, com os dados completos */
+    faixa(id) {
+      const alvo = id || this.faixaAtual;
+      return this.faixas.find((f) => f.id === alvo) || this.faixas[0] || this.dados;
+    },
+
+    /* troca de trilha: no player já aberto usa loadVideoById (não perde o
+       encaixe do iframe); se nada estiver montado, só marca a escolha. */
+    trocarFaixa(id, registro) {
+      const f = this.faixa(id);
+      if (!f || !f.id) return;
+      this.faixaAtual = f.id;
+      if (musicaMP3.tocando) musicaMP3.tocar(f.id); // continua ouvindo a nova trilha
+      if (this.player && this.player.loadVideoById) {
+        try {
+          this.player.loadVideoById(f.videoId);
+          this.estado = "carregando";
+          if (registro) this.alvoEmUsoId = registro.el.id;
+        } catch (e) {
+          this.avisar();
+        }
+      }
+      this.avisar();
+      if (!this.player && registro) {
+        /* ainda não há iframe: começa já nesta trilha, no player clicado */
+        this.tocar(registro);
+      }
+    },
+
     /* Monta de novo o encaixe dentro do alvo (o YouTube troca esse nó por
        um <iframe>; se o embed foi destruído, precisamos de um lugar novo). */
     garantirMontagem(alvo) {
@@ -907,7 +1059,8 @@
 
     async tocar(alvoPedido) {
       const dados = this.dados;
-      if (!dados.videoId) return;
+      const faixa = this.faixa();
+      if (!faixa || !faixa.videoId) return;
       audio.pausar(); // nunca as duas trilhas ao mesmo tempo
 
       const alvo = alvoPedido || this.alvoAtivo();
@@ -953,7 +1106,7 @@
         this.player = new YT.Player(casa, {
           width: "100%",
           height: "100%",
-          videoId: dados.videoId,
+          videoId: faixa.videoId,
           playerVars: {
             autoplay: 1,
             controls: 1,
@@ -986,7 +1139,8 @@
         this._relogio = setTimeout(() => {
           if (this.estado !== "tocando") {
             this.falhar(
-              "O player do YouTube não iniciou nesta janela — provavelmente o sandbox do preview bloqueou o embed."
+              "O embed do YouTube não iniciou aqui (preview em sandbox ou rede restrita). " +
+                "Use “Ouvir do arquivo (music/)” ou a aba “Sintetizado”."
             );
           }
         }, 9000);
@@ -1026,11 +1180,7 @@
       this.estado = "erro";
       this.erroDetalhe = detalhe || "";
       this.avisar();
-      FGA.toast(
-        "Trilha do YouTube indisponível",
-        detalhe + " Use a aba “Sintetizado” ou abra o vídeo direto no YouTube.",
-        "aviso"
-      );
+      FGA.toast("Trilha do YouTube indisponível", detalhe, "aviso");
     },
 
     avisar() {
@@ -1041,6 +1191,7 @@
 
   function blocoYouTube() {
     const dados = FGA.musica || {};
+    const faixas = dados.faixas && dados.faixas.length ? dados.faixas : [dados];
     const caixa = criar("div", { classe: "yt" });
 
     const palco = criar("div", { classe: "yt__palco" });
@@ -1048,26 +1199,15 @@
     alvo.append(criar("div", { classe: "yt__montagem" }));
     const registro = { el: alvo };
     musicaYT.alvos.push(registro);
+
+    /* capa da fachada — miniatura do YouTube com queda para um céu do acervo */
     const fachada = criar("button", {
       classe: "yt__fachada",
       type: "button",
-      "aria-label": "Tocar a trilha oficial no YouTube: " + (dados.titulo || ""),
+      "aria-label": "Tocar a trilha no player do YouTube",
     });
     const capa = document.createElement("img");
     capa.className = "yt__capa";
-    /* o sandbox do preview (e qualquer rede restrita) bloqueia o i.ytimg.com;
-       nesse caso cai para uma imagem local do acervo */
-    capa.src = dados.posterLocal || dados.thumb || "";
-    if (dados.thumb && dados.posterLocal) {
-      capa.addEventListener("error", () => {
-        capa.src = dados.posterLocal;
-      });
-      const teste = new Image();
-      teste.onload = () => {
-        capa.src = dados.thumb;
-      };
-      teste.src = dados.thumb;
-    }
     capa.alt = "";
     capa.loading = "lazy";
     const play = criar("span", { classe: "yt__play", "aria-hidden": "true" });
@@ -1076,23 +1216,81 @@
     fachada.append(capa, selo, play);
     palco.append(alvo, fachada);
 
-    const titulo = criar("p", { classe: "yt__titulo", html: `<strong>${dados.titulo || ""}</strong>` });
-    const meta = criar("p", {
-      classe: "yt__meta",
-      html: `canal <a href="${dados.canal || "#"}" target="_blank" rel="noopener">${dados.autor || ""}</a> · <a href="${dados.url || "#"}" target="_blank" rel="noopener">assistir no YouTube</a>`,
+    /* troca a capa quando muda a trilha (e volta à miniatura real se ela carregar) */
+    let capaDaFaixa = null;
+    function ajustarCapa(f) {
+      if (capaDaFaixa === f.id) return;
+      capaDaFaixa = f.id;
+      capa.src = f.posterLocal || f.thumb || "";
+      if (f.thumb && f.posterLocal) {
+        const teste = new Image();
+        teste.onload = () => {
+          if (capaDaFaixa === f.id) capa.src = f.thumb;
+        };
+        teste.src = f.thumb;
+        capa.onerror = () => {
+          capa.src = f.posterLocal;
+        };
+      }
+    }
+
+    /* ---- lista de trilhas ---- */
+    const lista = criar("div", { classe: "yt__faixas", role: "radiogroup", "aria-label": "Trilhas do site" });
+    const botoesFaixa = faixas.map((f) => {
+      const b = criar("button", { classe: "yt__faixa", type: "button", role: "radio", "aria-checked": "false" });
+      const mini = document.createElement("img");
+      mini.className = "yt__faixa-capa";
+      mini.alt = "";
+      mini.loading = "lazy";
+      mini.src = f.posterLocal || f.thumb || "";
+      if (f.thumb && f.posterLocal) {
+        mini.addEventListener("error", () => {
+          mini.src = f.posterLocal;
+        });
+        const teste = new Image();
+        teste.onload = () => {
+          mini.src = f.thumb;
+        };
+        teste.src = f.thumb;
+      }
+      b.append(
+        mini,
+        criar("span", {
+          classe: "yt__faixa-texto",
+          html: `<strong>${f.titulo}</strong><small>${f.autor} · ${f.etiqueta || ""}</small>`,
+        })
+      );
+      b.addEventListener("click", () => {
+        audio.desbloquear();
+        musicaYT.trocarFaixa(f.id, registro);
+      });
+      lista.append(b);
+      return b;
     });
+
+    const titulo = criar("p", { classe: "yt__titulo" });
+    const meta = criar("p", { classe: "yt__meta" });
 
     const controles = criar("div", { classe: "player__controles" });
     const botaoTocar = criar("button", { classe: "botao botao--pequeno botao--verde", type: "button" });
+    const botaoArquivo = criar("button", {
+      classe: "botao botao--pequeno botao--ciano",
+      type: "button",
+      title: "Toca o MP3 gravado na pasta music/ do projeto — funciona sem internet",
+    });
+    botaoArquivo.append(
+      FGA.icones.el("musica", { classe: "ico--botao" }),
+      criar("span", { texto: "Ouvir do arquivo (music/)" })
+    );
     const botaoPausar = criar("button", {
       classe: "botao botao--pequeno botao--fantasma",
       type: "button",
       texto: "Pausar",
     });
-    controles.append(botaoTocar, botaoPausar);
+    controles.append(botaoTocar, botaoArquivo, botaoPausar);
 
     const aviso = criar("p", { classe: "yt__aviso" });
-    caixa.append(palco, titulo, meta, controles, aviso);
+    caixa.append(palco, lista, titulo, meta, controles, aviso);
 
     fachada.addEventListener("click", () => {
       audio.desbloquear();
@@ -1102,23 +1300,65 @@
       audio.desbloquear();
       musicaYT.tocar(registro);
     });
-    botaoPausar.addEventListener("click", () => musicaYT.pausar());
+    botaoArquivo.addEventListener("click", () => {
+      audio.desbloquear();
+      musicaMP3.alternar(musicaYT.faixaAtual);
+    });
+    botaoPausar.addEventListener("click", () => {
+      musicaYT.pausar();
+      musicaMP3.pausar();
+    });
+    /* o aviso de erro oferece direto o arquivo local */
+    caixa.addEventListener("click", (e) => {
+      if (e.target.closest("[data-arquivo]")) {
+        audio.desbloquear();
+        musicaMP3.tocar(musicaYT.faixaAtual);
+      }
+    });
 
     caixa.atualizar = () => {
+      const f = musicaYT.faixa();
       const estado = musicaYT.estado;
       const tocando = estado === "tocando";
+      const doArquivo = musicaMP3.tocando && musicaMP3.faixaId === f.id;
+
+      ajustarCapa(f);
+      selo.textContent = doArquivo ? "tocando do arquivo · music/" : "trilha oficial · YouTube";
       botaoTocar.textContent =
-        estado === "carregando" ? "carregando…" : tocando ? "Reiniciar" : "Tocar trilha oficial";
+        estado === "carregando" ? "carregando…" : tocando ? "Reiniciar" : "Tocar no YouTube";
       botaoTocar.setAttribute("aria-pressed", String(tocando));
+      botaoArquivo.setAttribute("aria-pressed", String(doArquivo));
+      botaoArquivo.querySelector("span").textContent = doArquivo ? "Pausar o arquivo" : "Ouvir do arquivo (music/)";
       /* só o player que está tocando esconde a fachada (senão a capa ficaria
          por cima do vídeo do outro player) */
       fachada.style.display = tocando && musicaYT.alvoEmUsoId === alvo.id ? "none" : "";
-      aviso.innerHTML =
-        estado === "erro"
-          ? `<strong>Não deu para tocar aqui:</strong> ${musicaYT.erroDetalhe} <a href="${dados.url}" target="_blank" rel="noopener">Abrir no YouTube →</a>`
-          : estado === "carregando"
-            ? "carregando o player do YouTube…"
-            : "";
+
+      titulo.innerHTML = `<strong>${f.titulo || ""}</strong>`;
+      meta.innerHTML =
+        `canal <a href="${f.canal || "#"}" target="_blank" rel="noopener">${f.autor || ""}</a> · ` +
+        `<a href="${f.url || "#"}" target="_blank" rel="noopener">assistir no YouTube</a>`;
+
+      botoesFaixa.forEach((b, i) => {
+        const ativo = faixas[i].id === f.id;
+        b.setAttribute("aria-checked", String(ativo));
+        b.setAttribute("aria-pressed", String(ativo));
+      });
+
+      if (estado === "erro") {
+        aviso.innerHTML =
+          `<strong>Não deu para tocar o YouTube aqui:</strong> ${musicaYT.erroDetalhe} ` +
+          `<button class="botao botao--pequeno botao--verde" type="button" data-arquivo>` +
+          `Ouvir do arquivo (music/)</button> ` +
+          `<a href="${f.url || "#"}" target="_blank" rel="noopener">Abrir no YouTube</a>`;
+      } else if (musicaMP3.erro && musicaMP3.faixaId === f.id) {
+        aviso.innerHTML = `<strong>Arquivo local:</strong> ${musicaMP3.erro}`;
+      } else if (estado === "carregando") {
+        aviso.textContent = "carregando o player do YouTube…";
+      } else if (doArquivo) {
+        aviso.textContent = "tocando o arquivo gravado na pasta music/ do projeto — sem internet e sem embed.";
+      } else {
+        aviso.innerHTML = "";
+      }
     };
     caixa.atualizar();
     return caixa;
@@ -1237,6 +1477,7 @@
     entrada.addEventListener("input", () => {
       audio.definirVolume(Number(entrada.value) / 100);
       musicaYT.volume(audio.volume);
+      musicaMP3.volume(audio.volume);
     });
 
     player.append(abas, painel, volume);
@@ -1247,6 +1488,7 @@
     };
     audio.aoMudar = atualizarTudo;
     musicaYT.aoMudar = atualizarTudo;
+    musicaMP3.aoMudar = atualizarTudo;
     atualizarTudo();
 
     alvo.append(player);

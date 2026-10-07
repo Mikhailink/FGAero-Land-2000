@@ -6,7 +6,7 @@
 (function () {
   "use strict";
   const FGA = window.FGA || {};
-  const { inteiro, aleatorio, limitar, carregarImagens } = FGA.jogoUtil;
+  const { inteiro, aleatorio, limitar, carregarImagens, carregarImagem, pronta, fonte } = FGA.jogoUtil;
 
   const sprites = {
     avioes: [],
@@ -17,11 +17,13 @@
   };
 
   function carregarSprites() {
-    sprites.avioes = carregarImagens("airplanes", 6);
-    sprites.baloes = carregarImagens("balloons", 8);
-    sprites.perigos = carregarImagens("flares", 6);
-    sprites.bonus = carregarImagens("objects", 6);
-    sprites.nuvens = carregarImagens("clouds", 6);
+    /* o planador é SEMPRE a imagem airplanes_2 (avião de carreira branco):
+       as outras da pasta são jatos em ângulos que não combinam com o voo */
+    sprites.avioes = [carregarImagem("imagens/airplanes/airplanes_2.png", 320)];
+    sprites.baloes = carregarImagens("balloons", 8, 120);
+    sprites.perigos = carregarImagens("flares", 6, 140);
+    sprites.bonus = carregarImagens("objects", 6, 120);
+    sprites.nuvens = carregarImagens("clouds", 6, 340);
   }
   carregarSprites();
 
@@ -149,6 +151,19 @@
           n.y = aleatorio(40, A - 120);
         }
       });
+
+      // aviões de fundo: passam mais devagar que as nuvens (parallax)
+      avioesFundo.forEach((a) => {
+        a.x -= estado.velocidade * a.vel * 0.5 * dt;
+        const larg = a.altura * 2.34;
+        if (a.x < -larg - 60) {
+          a.x = j.largura + aleatorio(60, 700);
+          a.y = aleatorio(70, 640);
+          a.altura = aleatorio(26, 46);
+          a.vel = aleatorio(0.22, 0.5);
+          a.alfa = aleatorio(0.16, 0.34);
+        }
+      });
     },
     desenhar(j, ctx) {
       const L = j.largura;
@@ -173,8 +188,10 @@
       ctx.globalAlpha = 0.85;
       nuvensFundo.forEach((n) => {
         const img = n.img;
-        if (img && img.complete && img.naturalWidth) {
-          ctx.drawImage(img, n.x, n.y, n.tamanho, n.tamanho * (img.naturalHeight / img.naturalWidth));
+        if (pronta(img)) {
+          const f = fonte(img);
+          const alt = (n.tamanho * (img.naturalHeight || f.height)) / (img.naturalWidth || f.width);
+          ctx.drawImage(f, n.x, n.y, n.tamanho, alt);
         } else {
           j.bolha(ctx, n.x + n.tamanho / 2, n.y + n.tamanho / 2, n.tamanho / 2.4, 0.5, 200);
         }
@@ -198,16 +215,27 @@
       }
       ctx.restore();
 
+      // aviões de fundo
+      avioesFundo.forEach((a) => {
+        if (!pronta(a.img)) return;
+        const f = fonte(a.img);
+        const larg = a.altura * (a.img.naturalWidth / a.img.naturalHeight);
+        ctx.save();
+        ctx.globalAlpha = a.alfa;
+        ctx.drawImage(f, a.x, a.y, larg, a.altura);
+        ctx.restore();
+      });
+
       // entidades
       entidades.forEach((e) => {
         ctx.save();
         ctx.translate(e.x, e.y);
         ctx.rotate(e.giro * 0.2);
         const img = e.img;
-        if (img && img.complete && img.naturalWidth) {
+        if (pronta(img)) {
           const proporcao = img.naturalWidth / img.naturalHeight;
           const alt = e.r * 2;
-          ctx.drawImage(img, (-alt * proporcao) / 2, -alt / 2, alt * proporcao, alt);
+          ctx.drawImage(fonte(img), (-alt * proporcao) / 2, -alt / 2, alt * proporcao, alt);
         } else {
           ctx.fillStyle = e.tipo === "perigo" ? "rgba(20,60,110,0.6)" : "rgba(255,255,255,0.8)";
           ctx.beginPath();
@@ -251,14 +279,15 @@
       // planador
       const piscando = estado.invencivel > 0 && Math.floor(estado.invencivel * 9) % 2 === 0;
       const aviao = sprites.avioes.length ? sprites.avioes[0] : null;
+      const fonteAviao = fonte(aviao);
       ctx.save();
       ctx.globalAlpha = piscando ? 0.35 : 1;
       ctx.translate(estado.x, estado.y);
       ctx.rotate(limitar(estado.vy / 1200, -0.24, 0.24));
-      if (aviao && aviao.complete && aviao.naturalWidth) {
+      if (pronta(aviao)) {
         const alt = 86;
         const larg = alt * (aviao.naturalWidth / aviao.naturalHeight);
-        ctx.drawImage(aviao, -larg / 2, -alt / 2, larg, alt);
+        ctx.drawImage(fonteAviao, -larg / 2, -alt / 2, larg, alt);
       } else {
         ctx.fillStyle = "#fff";
         ctx.beginPath();
@@ -324,6 +353,24 @@
     };
   }
 
+  const avioesFundo = [];
+
+  /* três aviões ao fundo, sempre a mesma imagem (airplanes_2) em escalas
+     diferentes: sugere o corredor aéreo sem custo de desenho */
+  function prepararAvioesFundo() {
+    avioesFundo.length = 0;
+    for (let i = 0; i < 3; i++) {
+      avioesFundo.push({
+        img: sprites.avioes[0] || null,
+        x: aleatorio(200, 1400),
+        y: aleatorio(90, 620),
+        altura: aleatorio(26, 46),
+        vel: aleatorio(0.22, 0.5),
+        alfa: aleatorio(0.16, 0.34),
+      });
+    }
+  }
+
   function prepararNuvens() {
     nuvensFundo.length = 0;
     for (let i = 0; i < 9; i++) {
@@ -346,6 +393,7 @@
     const comecarOriginal = jogo.comecar.bind(jogo);
     jogo.comecar = function () {
       prepararNuvens();
+      prepararAvioesFundo();
       comecarOriginal();
       // recarrega sprites que possam ter falhado
       if (!sprites.avioes.length) carregarSprites();

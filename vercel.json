@@ -27,6 +27,13 @@
     {
       "source": "/js/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+    },
+    {
+      "source": "/music/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" },
+        { "key": "Accept-Ranges", "value": "bytes" }
+      ]
     }
   ],
   "redirects": [

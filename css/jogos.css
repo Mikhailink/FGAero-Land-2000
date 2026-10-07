@@ -83,34 +83,75 @@
 /* ---------- 2. Palco do jogo ---------- */
 .area-jogo {
   display: grid;
+  /* a coluna é minmax(0, 1fr): sem isso a lista de itens do Aquário impunha
+     uma coluna de ~1024 px e o celular reduzia a página inteira para caber */
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 .palco-jogo {
   position: relative;
-  min-height: 400px;
   border-radius: var(--raio);
   overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: var(--sombra-forte), var(--brilho-topo);
   background: linear-gradient(180deg, #6ec4ff, #cdeeff 55%, #a9e08a);
   touch-action: manipulation;
   user-select: none;
 }
+/* O canvas mantém SEMPRE a proporção real do jogo (16:10 = 1280x800) e nunca
+   passa de ~72% da altura da tela: antes o palco do Voo Aero era forçado a
+   4:5, o que esticava o jogo e criava um canvas de ~1450 px de altura. */
 .palco-jogo canvas {
   display: block;
-  width: 100%;
+  width: auto;
   height: auto;
+  max-width: 100%;
+  max-height: min(72vh, 700px);
   aspect-ratio: 16 / 10;
+  margin-inline: auto;
 }
-.palco-jogo--alto {
-  min-height: 560px;
-}
+/* a classe --alto só dá um pouco mais de altura ao palco do voo */
 .palco-jogo--alto canvas {
-  aspect-ratio: 4 / 5;
+  max-height: min(76vh, 760px);
 }
+/* palcos sem canvas (tabuleiro da memória e quiz da trivia): altura própria,
+   senão o palco vazio fica com 30 px antes de o jogo começar */
+.palco-jogo--dom {
+  min-height: min(560px, 68vh);
+  padding: 1rem;
+}
+/* telas pequenas: caixa de aviso mais compacta para caber inteira */
+@media (max-width: 420px) {
+  .sobreposicao__caixa {
+    padding: 0.95rem 1rem;
+  }
+  .sobreposicao__caixa p,
+  .sobreposicao__caixa li,
+  .sobreposicao__dicas li {
+    font-size: 0.86rem;
+  }
+  .sobreposicao__acoes {
+    margin-top: 0.6rem;
+  }
+}
+
 @media (max-width: 620px) {
+  /* no celular o canvas respeita a proporção do jogo e fica centralizado
+     dentro de um palco com altura de leitura — assim o aviso de "como
+     jogar" e a sobreposição de fim de jogo cabem na tela */
+  .palco-jogo {
+    min-height: min(76vh, 520px);
+  }
+  .palco-jogo--dom {
+    min-height: min(76vh, 540px);
+  }
+  .palco-jogo canvas,
   .palco-jogo--alto canvas {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 16 / 10;
+    max-height: min(58vh, 420px);
   }
 }
 
@@ -501,10 +542,20 @@
 }
 
 /* ---------- 7. Aquário (modo decorar) ---------- */
+/* A lista de itens do Aquário é uma faixa que rola na horizontal. Sem
+   min-width:0 ela impunha um min-content de ~1040 px e o navegador do
+   celular reduzia a página inteira (aspecto de "resolução estranha"). */
+#seletorItens,
+.seletor-itens__grupo,
+.seletor-itens {
+  min-width: 0;
+  max-width: 100%;
+}
 .seletor-itens {
   display: flex;
   gap: 0.45rem;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0.5rem 0.2rem 0.7rem;
 }
 .seletor-itens__botao {

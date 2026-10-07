@@ -277,7 +277,7 @@ INDEX = """
               Bem-vindo ao arquivo vivo da estética <strong>Frutiger Aero</strong>: a era em que
               computadores, wallpapers e comerciais prometiam um futuro limpo, verde e banhado de
               luz. Aqui você navega por <strong>1.284 imagens catalogadas</strong>, joga minigames
-              com a cara de 2008, ouve a trilha oficial de 2007 e lembra como era a internet antes
+              com a cara de 2008, ouve as trilhas de ambiência e lembra como era a internet antes
               do design chapado.
             </p>
             <div class="empilhado espaco-topo">
@@ -318,8 +318,8 @@ INDEX = """
               <span class="indicador__texto">minigames no arcade Aero</span>
             </div>
             <div class="indicador surgir">
-              <span class="indicador__numero" data-contar="1">0</span>
-              <span class="indicador__texto">trilha sonora oficial de 2007 (YouTube)</span>
+              <span class="indicador__numero" data-contar="4">0</span>
+              <span class="indicador__texto">trilhas de ambiência Aero no player</span>
             </div>
             <div class="indicador surgir">
               <span class="indicador__numero" data-contar="13">0</span>
@@ -483,17 +483,20 @@ INDEX = """
         <div class="container duas-colunas">
           <div class="surgir">
             <span class="sobretitulo">trilha sonora</span>
-            <h2>A trilha oficial de 2007</h2>
+            <h2>Quatro trilhas para navegar</h2>
             <p>
-              A música do site é <strong>“HOME: 2007 Aero Ambience”</strong>, do canal
-              <strong>Focusyn Audio</strong>: um ambiente sonoro de Windows Vista Center, com pads
-              de vidro e texturas de fim de tarde. Ela toca pelo player oficial do YouTube, direto
-              aqui dentro — sem baixar nem redistribuir nada.
+              O player traz <strong>quatro faixas</strong> de ambiência Aero — de
+              <strong>“HOME: 2007 Aero Ambience”</strong> (Focusyn Audio) a
+              <strong>“A Brighter Age”</strong> (Dreamfibre) e à playlist
+              <em>Somewhere in 2007</em>. Escolha na lista e a música toca pelo player oficial do
+              YouTube, aqui dentro, sem baixar nada.
             </p>
             <p class="dica-uso">
-              Aperte <strong>M</strong> (ou o botão do topo) para tocar e pausar. A aba
-              <em>Sintetizado</em> guarda as faixas geradas na hora pela Web Audio API, para quem
-              quiser navegar sem o player externo.
+              Aperte <strong>M</strong> (ou o botão do topo) para tocar e pausar. Se o embed do
+              YouTube não iniciar (preview em sandbox, rede restrita), use
+              <strong>“Ouvir do arquivo (music/)”</strong>: toca o MP3 gravado na pasta
+              <code>music/</code> do projeto, sem internet. A aba <em>Sintetizado</em> continua ali
+              para quem quiser música gerada na hora pela Web Audio API.
             </p>
             <div id="areaPlayer"></div>
           </div>
@@ -503,7 +506,7 @@ INDEX = """
               <h3>O dock embaixo da tela</h3>
             </div>
             <ul class="lista-bolha">
-              <li>%%ico:musica:ico--chip%% <strong>Trilha oficial</strong> — abre o player flutuante estilo Vista.</li>
+              <li>%%ico:musica:ico--chip%% <strong>Trilha sonora</strong> — abre o player flutuante estilo Vista, com 4 faixas do YouTube e MP3 local.</li>
               <li>%%ico:curiosidades:ico--chip%% <strong>Curiosidade</strong> — a janela arrastável com um fato da época.</li>
               <li>%%ico:cenario:ico--chip%% <strong>Trocar cenário</strong> — sorteia outro céu do acervo (64 disponíveis no repositório).</li>
               <li>%%ico:retro:ico--chip%% <strong>Modo 2000</strong> — janelas sólidas, bordas duras, visual de 2002.</li>
@@ -951,7 +954,7 @@ CREDITOS = """
               <tbody>
                 <tr><th>Front-end</th><td>HTML5, CSS3 (grid, flex, <code>backdrop-filter</code>, variáveis), JavaScript ES2020 sem framework</td></tr>
                 <tr><th>Jogos</th><td>Canvas 2D + DOM, engine própria em <code>js/jogos.js</code></td></tr>
-                <tr><th>Áudio</th><td>Trilha oficial de 2007 pelo player do YouTube + Web Audio API: 3 faixas e 9 efeitos sintetizados em tempo real como reserva</td></tr>
+                <tr><th>Áudio</th><td>4 trilhas pelo player do YouTube + MP3 da pasta <code>music/</code> como reserva offline + 3 faixas e 9 efeitos sintetizados em tempo real (Web Audio API)</td></tr>
                 <tr><th>Cursor</th><td><code>css/cur771.cur</code> — seta do Windows Vista</td></tr>
                 <tr><th>Imagens</th><td>1.284 no repositório · 171 otimizadas no site</td></tr>
                 <tr><th>Publicação</th><td>GitHub (código) + Vercel (site estático)</td></tr>
@@ -1123,7 +1126,7 @@ JOGO_MEMORIA = """
                 <a class="botao botao--pequeno botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Outros jogos</span></a>
               </div>
             </div>
-            <div class="palco-jogo palco-jogo--alto" style="background:linear-gradient(180deg,#8fd4ff,#dff4ff 60%,#bdea9a)">
+            <div class="palco-jogo palco-jogo--dom" style="background:linear-gradient(180deg,#8fd4ff,#dff4ff 60%,#bdea9a)">
               <div style="padding:1rem">
                 <div class="tabuleiro" id="tabuleiroMemoria"></div>
               </div>
@@ -1166,7 +1169,7 @@ JOGO_TRIVIA = """
                 <a class="botao botao--pequeno botao--fantasma" href="jogos.html">%%ico:jogos:ico--botao%%<span>Outros jogos</span></a>
               </div>
             </div>
-            <div class="palco-jogo palco-jogo--alto" style="background:linear-gradient(180deg,#7fc9f2,#d8f0ff 60%,#c7ecac); padding:1rem">
+            <div class="palco-jogo palco-jogo--dom" style="background:linear-gradient(180deg,#7fc9f2,#d8f0ff 60%,#c7ecac); padding:1rem">
               <div id="palcoTrivia"></div>
               <div class="pontos-flutuantes" aria-hidden="true"></div>
               <div class="sobreposicao" id="sobreposicaoTrivia"></div>
