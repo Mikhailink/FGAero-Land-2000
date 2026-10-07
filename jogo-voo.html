@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voo Aero — FGAero Land 2000</title>
+    <meta name="description" content="Minigame Voo Aero: planador infinito entre nuvens, colete balões e desvie dos brilhos escuros.">
+    <meta name="author" content="FGAero Land 2000">
+    <meta name="theme-color" content="#8fd0ff">
+    <meta name="color-scheme" content="light">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Voo Aero — FGAero Land 2000">
+    <meta property="og:description" content="Minigame Voo Aero: planador infinito entre nuvens, colete balões e desvie dos brilhos escuros.">
+    <meta property="og:image" content="og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="FGAero Land 2000 — arquivo vivo do Frutiger Aero">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='a' cx='35%25' cy='28%25'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='.55' stop-color='%238fd8ff'/%3E%3Cstop offset='1' stop-color='%232f86d0'/%3E%3C/radialGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23eaffd0'/%3E%3Cstop offset='1' stop-color='%2379c346'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='url(%23a)'/%3E%3Cpath d='M4 42c9-7 18-6 28-1s20 4 28-3v10A30 30 0 0 1 4 42z' fill='url(%23b)'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23ffffff' stroke-width='2' opacity='.85'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" sizes="192x192" href="icone-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icone-512.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/aero.css">
+    <link rel="stylesheet" href="css/jogos.css">
+    <meta name="format-detection" content="telephone=no">
+  </head>
+  <body data-pagina="voo">
+    <a class="pular-link" href="#conteudo">Ir para o conteúdo</a>
+    <div class="cenario" aria-hidden="true">
+      <div class="cenario__ceu"></div>
+      <div class="cenario__luz"></div>
+      <div class="cenario__grao"></div>
+    </div>
+    <canvas id="bolhasFundo" aria-hidden="true"></canvas>
+    <div class="blob blob--1" aria-hidden="true"></div>
+    <div class="blob blob--2" aria-hidden="true"></div>
+    <div class="blob blob--3" aria-hidden="true"></div>
+    <header class="topo">
+      <div class="topo__interno">
+        <a class="marca" href="index.html">
+          <svg class="marca__selo" viewBox="0 0 64 64" role="img" aria-label="Selo do FGAero Land 2000">
+        <defs>
+          <radialGradient id="seloA" cx="34%" cy="26%" r="78%">
+            <stop offset="0" stop-color="#ffffff"></stop>
+            <stop offset="0.55" stop-color="#8fd8ff"></stop>
+            <stop offset="1" stop-color="#2f86d0"></stop>
+          </radialGradient>
+          <linearGradient id="seloB" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#eaffd0"></stop>
+            <stop offset="1" stop-color="#79c346"></stop>
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="30" fill="url(#seloA)"></circle>
+        <path d="M4 43c9-7 18-6 28-1s20 4 28-3v10A30 30 0 0 1 4 43z" fill="url(#seloB)" opacity="0.95"></path>
+        <path d="M4 43c9-7 18-6 28-1s20 4 28-3" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.8"></path>
+        <circle cx="32" cy="32" r="29" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.9"></circle>
+        <circle cx="23" cy="20" r="6" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.75"></circle>
+        <circle cx="41" cy="15" r="3.6" fill="none" stroke="#ffffff" stroke-width="1.8" opacity="0.7"></circle>
+      </svg>
+          <span class="marca__texto">
+            <span class="marca__nome">FGAero Land 2000</span>
+            <span class="marca__lema">arquivo vivo do Frutiger Aero</span>
+          </span>
+        </a>
+        <button class="botao-icone menu__hamburguer" type="button" aria-expanded="false" aria-controls="menuPrincipal" aria-label="Abrir menu">☰</button>
+        <nav class="menu" id="menuPrincipal" aria-label="Navegação principal">
+          <a class="menu__link" href="index.html">Início</a>
+          <a class="menu__link" href="historia.html">História</a>
+          <a class="menu__link" href="galeria.html">Galeria</a>
+          <a class="menu__link" href="jogos.html">Jogos</a>
+          <a class="menu__link" href="curiosidades.html">Curiosidades</a>
+          <a class="menu__link" href="creditos.html">Créditos</a>
+        </nav>
+        <div class="topo__acoes">
+          <button class="botao-icone" id="botaoSom" type="button" title="Ligar ou pausar a música (atalho: M)" aria-label="Ligar ou pausar a música">🎵</button>
+        </div>
+      </div>
+    </header>
+    <main id="conteudo">
+
+      <section class="hero" style="padding-bottom:1.2rem">
+        <div class="container">
+          <span class="sobretitulo">minigame · FGAero Land 2000</span>
+          <h1 class="hero__titulo" style="font-size:clamp(2rem,5vw,3rem)">
+            ✈️ Voo Aero
+            <span>planador infinito entre nuvens, balões e brilhos perigosos</span>
+          </h1>
+        </div>
+      </section>
+
+      <section class="secao" style="padding-top:0">
+        <div class="container">
+          <div class="area-jogo">
+            <div class="hud">
+              <div class="hud__grupo">
+                <span class="hud__item">pontos <strong data-hud="pontos">0</strong></span>
+                <span class="hud__item hud__item--destaque">🏆 <strong data-hud="recorde">0</strong></span>
+                <span class="hud__item">vidas <strong data-hud="vidas">3</strong></span>
+                <span class="hud__item">nível <strong data-hud="nivel">1</strong></span>
+              </div>
+              <div class="hud__grupo">
+                <span class="hud__barra"><span data-hud="barra"></span></span>
+                <button class="botao botao--pequeno" id="botaoPausa" type="button">⏸ Pausar</button>
+                <button class="botao botao--pequeno botao--fantasma" id="botaoReiniciar" type="button">↻ Reiniciar</button>
+                <a class="botao botao--pequeno botao--fantasma" href="jogos.html">🎮 Outros jogos</a>
+              </div>
+            </div>
+            <div class="palco-jogo palco-jogo--alto">
+              <canvas id="palcoVoo" width="1280" height="800" aria-label="✈️ Voo Aero — área do jogo"></canvas>
+              <div class="pontos-flutuantes" aria-hidden="true"></div>
+              <div class="contagem" hidden aria-hidden="true"></div>
+              <div class="sobreposicao" id="sobreposicaoJogo"></div>
+            </div>
+            
+            <div class="controles-toque">
+              <button class="controles-toque__botao" type="button" data-controle="subir" aria-label="Subir">▲ Subir</button>
+              <button class="controles-toque__botao" type="button" data-controle="descer" aria-label="Descer">▼ Descer</button>
+            </div>
+            <p class="dica-uso" style="text-align:center">
+              Use ↑ ↓ (ou W S) no teclado; no celular, arraste o dedo pelo palco ou use os botões abaixo.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="rodape">
+      <div class="container">
+        <div class="rodape__grade">
+          <div>
+            <h3>FGAero Land 2000</h3>
+            <p style="font-size:.92rem">
+              Um arquivo vivo da estética Frutiger Aero (2004–2013): história, galeria com
+              <strong>1.284 imagens</strong> catalogadas, cinco minigames e a internet brasileira
+              dos anos 2000.
+            </p>
+            <p style="font-size:.86rem">
+              Publicado no GitHub e hospedado na Vercel · HTML, CSS e JavaScript puros.
+            </p>
+          </div>
+          <div>
+            <h4>Navegar</h4>
+            <ul class="rodape__lista">
+              <li><a href="historia.html">História da estética</a></li>
+              <li><a href="galeria.html">Galeria do acervo</a></li>
+              <li><a href="jogos.html">Minigames</a></li>
+              <li><a href="curiosidades.html">Curiosidades e linhas do tempo</a></li>
+              <li><a href="creditos.html">Créditos e fontes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Acervo</h4>
+            <ul class="rodape__lista">
+              <li><a href="https://github.com/Mikhailink/FGAero-Land-2000" target="_blank" rel="noopener">github.com/Mikhailink/FGAero-Land-2000</a></li>
+              <li><a href="https://frutigeraeroarchive.org" target="_blank" rel="noopener">frutigeraeroarchive.org</a></li>
+              <li><a href="https://aesthetics.fandom.com/wiki/Frutiger_Aero" target="_blank" rel="noopener">Aesthetics Wiki · Frutiger Aero</a></li>
+              <li><a href="https://cari.institute" target="_blank" rel="noopener">CARI — Consumer Aesthetics Research Institute</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Atalhos</h4>
+            <ul class="rodape__lista">
+              <li><strong>M</strong> liga/pausa a música</li>
+              <li><strong>C</strong> troca o cenário de céu</li>
+              <li><strong>K</strong> abre uma curiosidade</li>
+              <li><strong>← →</strong> navegam na galeria</li>
+              <li><strong>P</strong> pausa os minigames</li>
+            </ul>
+          </div>
+        </div>
+        <div class="rodape__base">
+          <span>© <span id="anoAtual">2026</span> FGAero Land 2000 · projeto editorial sem fins comerciais.</span>
+          <span>Imagens do acervo Frutiger Aero Archive · créditos aos autores originais.</span>
+          <span>Feito com vidro, bolhas e saudade. 🫧</span>
+        </div>
+      </div>
+    </footer>
+    <div class="dock" id="dock" role="toolbar" aria-label="Ferramentas do site"></div>
+    <script src="js/acervo.js"></script>
+    <script src="js/conteudo.js"></script>
+    <script src="js/aero.js"></script>
+    <script src="js/paginas.js"></script>
+    <script src="js/jogos.js"></script>
+    <script src="js/jogo-voo.js"></script>
+    <script>document.getElementById("anoAtual") && (document.getElementById("anoAtual").textContent = new Date().getFullYear());</script>
+  </body>
+</html>

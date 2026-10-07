@@ -1,0 +1,17 @@
+# dependencias e artefatos
+node_modules/
+dist/
+build/
+coverage/
+.vercel/
+.DS_Store
+Thumbs.db
+
+# caches das ferramentas de otimizacao
+.cache/
+tools/download_log.json
+tools/_fix.json
+
+# rascunhos locais
+*.log
+rascunho-*.md

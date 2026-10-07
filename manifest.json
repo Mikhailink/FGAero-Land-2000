@@ -1,0 +1,23 @@
+{
+  "name": "FGAero Land 2000 — arquivo vivo do Frutiger Aero",
+  "short_name": "FGAero Land",
+  "description": "Arquivo interativo da estética Frutiger Aero: história, galeria com 1.284 imagens, cinco minigames, música sintetizada e curiosidades da internet dos anos 2000.",
+  "lang": "pt-BR",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#b8e6ff",
+  "theme_color": "#6fc0ff",
+  "categories": ["games", "entertainment", "education"],
+  "icons": [
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Galeria", "url": "galeria.html" },
+    { "name": "Minigames", "url": "jogos.html" },
+    { "name": "Trivia Aero", "url": "jogo-trivia.html" }
+  ]
+}
